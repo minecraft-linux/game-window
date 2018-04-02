@@ -1,6 +1,6 @@
 #pragma once
 
-#include "window.h"
+#include <game_window.h>
 
 class EGLUTWindow : public GameWindow {
 

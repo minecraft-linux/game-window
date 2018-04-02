@@ -1,6 +1,6 @@
 #pragma once
 
-#include "window.h"
+#include <game_window.h>
 #include <GLFW/glfw3.h>
 
 class GLFWGameWindow : public GameWindow {
