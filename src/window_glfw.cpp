@@ -24,6 +24,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetFramebufferSizeCallback(window, _glfwWindowSizeCallback);
     glfwSetCursorPosCallback(window, _glfwCursorPosCallback);
     glfwSetMouseButtonCallback(window, _glfwMouseButtonCallback);
+    glfwSetScrollCallback(window, _glfwScrollCallback);
     glfwSetWindowCloseCallback(window, _glfwWindowCloseCallback);
     glfwSetKeyCallback(window, _glfwKeyCallback);
     glfwSetCharCallback(window, _glfwCharCallback);
@@ -120,6 +121,13 @@ void GLFWGameWindow::_glfwMouseButtonCallback(GLFWwindow* window, int button, in
     y *= user->getRelativeScale();
 
     user->onMouseButton(x, y, button + 1, action == GLFW_PRESS ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
+}
+
+void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y) {
+    GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
+    double cx, cy;
+    glfwGetCursorPos(window, &cx, &cy);
+    user->onMouseScroll(cx, cy, x, y);
 }
 
 int GLFWGameWindow::getKeyMinecraft(int keyCode) {

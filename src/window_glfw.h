@@ -17,6 +17,7 @@ private:
     static void _glfwWindowSizeCallback(GLFWwindow* window, int w, int h);
     static void _glfwCursorPosCallback(GLFWwindow* window, double x, double y);
     static void _glfwMouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+    static void _glfwScrollCallback(GLFWwindow* window, double x, double y);
     static void _glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void _glfwCharCallback(GLFWwindow* window, unsigned int ch);
     static void _glfwWindowCloseCallback(GLFWwindow* window);
