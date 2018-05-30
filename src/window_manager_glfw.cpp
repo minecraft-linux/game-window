@@ -1,19 +1,18 @@
 #include "window_manager_glfw.h"
 #include "window_glfw.h"
-#include <EGL/egl.h>
-#include <eglut.h>
 
 GLFWWindowManager::GLFWWindowManager() {
-    eglutInit(0, nullptr); // the args aren't really required and are troublesome to pass with this system
+    if (glfwInit() != GLFW_TRUE)
+        throw std::runtime_error("glfwInit error");
 }
 
 GameWindowManager::ProcAddrFunc GLFWWindowManager::getProcAddrFunc() {
-    return (GameWindowManager::ProcAddrFunc) eglGetProcAddress;
+    return (GameWindowManager::ProcAddrFunc) glfwGetProcAddress;
 }
 
 std::shared_ptr<GameWindow> GLFWWindowManager::createWindow(const std::string& title, int width, int height,
                                                              GraphicsApi api) {
-    return std::shared_ptr<GameWindow>(new GLFWWindow(title, width, height, api));
+    return std::shared_ptr<GameWindow>(new GLFWGameWindow(title, width, height, api));
 }
 
 

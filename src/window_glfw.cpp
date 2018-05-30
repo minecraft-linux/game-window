@@ -9,7 +9,8 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
         GameWindow(title, width, height, api), windowedWidth(width), windowedHeight(height) {
     glfwDefaultWindowHints();
     if (api == GraphicsApi::OPENGL_ES2) {
-        glfwWindowHint(GLFW_OPENGL_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     } else if (api == GraphicsApi::OPENGL) {
