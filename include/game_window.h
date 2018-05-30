@@ -12,6 +12,15 @@ enum class KeyAction {
 enum class MouseButtonAction {
     PRESS, RELEASE
 };
+enum class GamepadButtonId {
+    A, B, X, Y, LB, RB, BACK, START, GUIDE, LEFT_STICK, RIGHT_STICK,
+    DPAD_UP, DPAD_RIGHT, DPAD_DOWN, DPAD_LEFT,
+    UNKNOWN = -1
+};
+enum class GamepadAxisId {
+    LEFT_X, LEFT_Y, RIGHT_X, RIGHT_Y, LEFT_TRIGGER, RIGHT_TRIGGER,
+    UNKNOWN = -1
+};
 
 class GameWindow {
 
@@ -24,6 +33,9 @@ public:
     using KeyboardCallback = std::function<void (int, KeyAction)>;
     using KeyboardTextCallback = std::function<void (std::string const&)>;
     using PasteCallback = std::function<void (std::string const&)>;
+    using GamepadStateCallback = std::function<void (int, bool)>;
+    using GamepadButtonCallback = std::function<void (int, GamepadButtonId, bool)>;
+    using GamepadAxisCallback = std::function<void (int, GamepadAxisId, float)>;
     using CloseCallback = std::function<void ()>;
 
 private:
@@ -35,6 +47,9 @@ private:
     KeyboardCallback keyboardCallback;
     KeyboardTextCallback keyboardTextCallback;
     PasteCallback pasteCallback;
+    GamepadStateCallback gamepadStateCallback;
+    GamepadButtonCallback gamepadButtonCallback;
+    GamepadAxisCallback gamepadAxisCallback;
     CloseCallback closeCallback;
 
 public:
@@ -76,6 +91,12 @@ public:
     // Used when the cursor is disabled
     void setMouseRelativePositionCallback(MousePositionCallback callback) { mouseRelativePositionCallback = std::move(callback); }
 
+    void setGamepadStateCallback(GamepadStateCallback callback) { gamepadStateCallback = std::move(callback); }
+
+    void setGamepadButtonCallback(GamepadButtonCallback callback) { gamepadButtonCallback = std::move(callback); }
+
+    void setGamepadAxisCallback(GamepadAxisCallback callback) { gamepadAxisCallback = std::move(callback); }
+
     void setCloseCallback(CloseCallback callback) { closeCallback = std::move(callback); }
 
 
@@ -116,6 +137,18 @@ protected:
     void onPaste(std::string const& c) {
         if (pasteCallback != nullptr)
             pasteCallback(c);
+    }
+    void onGamepadState(int id, bool connected) {
+        if (gamepadStateCallback != nullptr)
+            gamepadStateCallback(id, connected);
+    }
+    void onGamepadButton(int id, GamepadButtonId btn, bool pressed) {
+        if (gamepadButtonCallback != nullptr)
+            gamepadButtonCallback(id, btn, pressed);
+    }
+    void onGamepadAxis(int id, GamepadAxisId axis, float val) {
+        if (gamepadAxisCallback != nullptr)
+            gamepadAxisCallback(id, axis, val);
     }
     void onClose() {
         if (closeCallback != nullptr)

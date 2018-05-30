@@ -13,7 +13,7 @@ set(GAMEWINDOW_SYSTEM ${GAMEWINDOW_SYSTEM_DEFAULT} CACHE STRING "The implementat
 
 set(GAMEWINDOW_SOURCES include/game_window.h include/game_window_manager.h src/game_window_manager.cpp)
 set(GAMEWINDOW_SOURCES_EGLUT src/window_eglut.h src/window_eglut.cpp src/window_manager_eglut.cpp src/window_manager_eglut.h)
-set(GAMEWINDOW_SOURCES_GLFW src/window_glfw.h src/window_glfw.cpp src/window_manager_glfw.cpp src/window_manager_glfw.h)
+set(GAMEWINDOW_SOURCES_GLFW src/window_glfw.h src/window_glfw.cpp src/window_manager_glfw.cpp src/window_manager_glfw.h src/joystick_manager_glfw.cpp src/joystick_manager_glfw.h)
 
 add_library(gamewindow ${GAMEWINDOW_SOURCES})
 target_include_directories(gamewindow PUBLIC include/)

@@ -1,4 +1,5 @@
 #include "window_glfw.h"
+#include "joystick_manager_glfw.h"
 
 #include <codecvt>
 #include <iomanip>
@@ -28,12 +29,14 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetWindowCloseCallback(window, _glfwWindowCloseCallback);
     glfwSetKeyCallback(window, _glfwKeyCallback);
     glfwSetCharCallback(window, _glfwCharCallback);
+    glfwSetWindowFocusCallback(window, _glfwWindowFocusCallback);
     glfwMakeContextCurrent(window);
 
     setRelativeScale();
 }
 
 GLFWGameWindow::~GLFWGameWindow() {
+    GLFWJoystickManager::removeWindow(this);
     glfwDestroyWindow(window);
 }
 
@@ -68,7 +71,9 @@ void GLFWGameWindow::close() {
 }
 
 void GLFWGameWindow::runLoop() {
+    GLFWJoystickManager::addWindow(this);
     while (!glfwWindowShouldClose(window)) {
+        GLFWJoystickManager::update(this);
         onDraw();
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -163,4 +168,9 @@ void GLFWGameWindow::_glfwWindowCloseCallback(GLFWwindow* window) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
     glfwSetWindowShouldClose(window, GLFW_FALSE);
     user->onClose();
+}
+
+void GLFWGameWindow::_glfwWindowFocusCallback(GLFWwindow* window, int focused) {
+    GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
+    GLFWJoystickManager::onWindowFocused(user, focused == GLFW_TRUE);
 }

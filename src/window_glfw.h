@@ -12,6 +12,8 @@ private:
     int windowedWidth = -1, windowedHeight = -1;
     int relativeScale;
 
+    friend class GLFWJoystickManager;
+
     static int getKeyMinecraft(int keyCode);
 
     static void _glfwWindowSizeCallback(GLFWwindow* window, int w, int h);
@@ -21,6 +23,7 @@ private:
     static void _glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void _glfwCharCallback(GLFWwindow* window, unsigned int ch);
     static void _glfwWindowCloseCallback(GLFWwindow* window);
+    static void _glfwWindowFocusCallback(GLFWwindow* window, int focused);
 
 public:
 

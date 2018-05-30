@@ -1,9 +1,11 @@
 #include "window_manager_glfw.h"
 #include "window_glfw.h"
+#include "joystick_manager_glfw.h"
 
 GLFWWindowManager::GLFWWindowManager() {
     if (glfwInit() != GLFW_TRUE)
         throw std::runtime_error("glfwInit error");
+    GLFWJoystickManager::init();
 }
 
 GameWindowManager::ProcAddrFunc GLFWWindowManager::getProcAddrFunc() {
