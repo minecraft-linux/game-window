@@ -26,6 +26,7 @@ private:
 
     void onGamepadState(gamepad::Gamepad* gp, bool connected);
     void onGamepadButton(gamepad::Gamepad* gp, gamepad::GamepadButton btn, bool state);
+    void onGamepadAxis(gamepad::Gamepad* gp, gamepad::GamepadAxis axis, float value);
 
 public:
     static LinuxGamepadJoystickManager instance;

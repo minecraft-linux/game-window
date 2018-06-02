@@ -12,6 +12,7 @@ LinuxGamepadJoystickManager::LinuxGamepadJoystickManager() : joystickManager(gam
     gamepadManager.onGamepadConnected.add(std::bind(&LinuxGamepadJoystickManager::onGamepadState, this, _1, true));
     gamepadManager.onGamepadDisconnected.add(std::bind(&LinuxGamepadJoystickManager::onGamepadState, this, _1, false));
     gamepadManager.onGamepadButton.add(std::bind(&LinuxGamepadJoystickManager::onGamepadButton, this, _1, _2, _3));
+    gamepadManager.onGamepadAxis.add(std::bind(&LinuxGamepadJoystickManager::onGamepadAxis, this, _1, _2, _3));
 
     loadMappingsFromFile("gamecontrollerdb.txt");
     joystickManager->initialize();
@@ -70,6 +71,11 @@ void LinuxGamepadJoystickManager::onGamepadState(gamepad::Gamepad* gp, bool conn
 void LinuxGamepadJoystickManager::onGamepadButton(gamepad::Gamepad* gp, gamepad::GamepadButton btn, bool state) {
     if (focusedWindow != nullptr)
         focusedWindow->onGamepadButton(gp->getIndex(), mapButtonId(btn), state);
+}
+
+void LinuxGamepadJoystickManager::onGamepadAxis(gamepad::Gamepad* gp, gamepad::GamepadAxis axis, float value) {
+    if (focusedWindow != nullptr)
+        focusedWindow->onGamepadAxis(gp->getIndex(), mapAxisId(axis), value);
 }
 
 GamepadButtonId LinuxGamepadJoystickManager::mapButtonId(gamepad::GamepadButton id) {
