@@ -10,7 +10,7 @@ extern "C" {
 EGLUTWindow* EGLUTWindow::currentWindow;
 
 EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, GraphicsApi api) :
-        GameWindow(title, width, height, api), title(title), width(width), height(height), graphicsApi(api) {
+        WindowWithLinuxJoystick(title, width, height, api), title(title), width(width), height(height), graphicsApi(api) {
 }
 
 EGLUTWindow::~EGLUTWindow() {
@@ -35,6 +35,7 @@ void EGLUTWindow::show() {
     eglutPasteFunc(_eglutPasteFunc);
     eglutCloseWindowFunc(_eglutCloseWindowFunc);
     currentWindow = this;
+    addWindowToGamepadManager();
 }
 
 void EGLUTWindow::close() {
@@ -70,6 +71,7 @@ void EGLUTWindow::_eglutIdleFunc() {
         eglutWarpMousePointer(cx, cy);
         currentWindow->moveMouseToCenter = false;
     }
+    currentWindow->updateGamepad();
     eglutPostRedisplay();
 }
 

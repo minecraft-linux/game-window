@@ -1,8 +1,8 @@
 #pragma once
 
-#include <game_window.h>
+#include "window_with_linux_gamepad.h"
 
-class EGLUTWindow : public GameWindow {
+class EGLUTWindow : public WindowWithLinuxJoystick {
 
 private:
     static EGLUTWindow* currentWindow;
