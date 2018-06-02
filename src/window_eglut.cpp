@@ -35,7 +35,6 @@ void EGLUTWindow::show() {
     eglutPasteFunc(_eglutPasteFunc);
     eglutCloseWindowFunc(_eglutCloseWindowFunc);
     currentWindow = this;
-    addWindowToGamepadManager();
 }
 
 void EGLUTWindow::close() {
@@ -45,6 +44,7 @@ void EGLUTWindow::close() {
 }
 
 void EGLUTWindow::runLoop() {
+    addWindowToGamepadManager();
     eglutMainLoop();
 }
 
