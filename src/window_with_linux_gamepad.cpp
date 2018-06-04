@@ -11,7 +11,6 @@ WindowWithLinuxJoystick::~WindowWithLinuxJoystick() {
 
 void WindowWithLinuxJoystick::addWindowToGamepadManager() {
     LinuxGamepadJoystickManager::instance.addWindow(this);
-    LinuxGamepadJoystickManager::instance.onWindowFocused(this, true);
 }
 
 void WindowWithLinuxJoystick::updateGamepad() {

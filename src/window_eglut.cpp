@@ -1,4 +1,5 @@
 #include "window_eglut.h"
+#include "joystick_manager_linux_gamepad.h"
 
 #include <cstring>
 #include <sstream>
@@ -34,6 +35,7 @@ void EGLUTWindow::show() {
     eglutKeyboardFunc(_eglutKeyboardFunc);
     eglutSpecialFunc(_eglutKeyboardSpecialFunc);
     eglutPasteFunc(_eglutPasteFunc);
+    eglutFocusFunc(_eglutFocusFunc);
     eglutCloseWindowFunc(_eglutCloseWindowFunc);
     currentWindow = this;
 }
@@ -148,6 +150,12 @@ void EGLUTWindow::_eglutPasteFunc(const char* str, int len) {
     if (currentWindow == nullptr)
         return;
     currentWindow->onPaste(std::string(str, len));
+}
+
+void EGLUTWindow::_eglutFocusFunc(int action) {
+    if (currentWindow == nullptr)
+        return;
+    LinuxGamepadJoystickManager::instance.onWindowFocused(currentWindow, (action == EGLUT_FOCUSED));
 }
 
 void EGLUTWindow::_eglutCloseWindowFunc() {
