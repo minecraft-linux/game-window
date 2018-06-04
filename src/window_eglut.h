@@ -23,6 +23,7 @@ private:
     static void _eglutDisplayFunc();
     static void _eglutReshapeFunc(int w, int h);
     static void _eglutMouseFunc(int x, int y);
+    static void _eglutMouseRawFunc(double x, double y);
     static void _eglutMouseButtonFunc(int x, int y, int btn, int action);
     static void _eglutKeyboardFunc(char str[5], int action);
     static void _eglutKeyboardSpecialFunc(int key, int action);

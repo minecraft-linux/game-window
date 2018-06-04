@@ -30,6 +30,7 @@ void EGLUTWindow::show() {
     eglutReshapeFunc(_eglutReshapeFunc);
     eglutMouseFunc(_eglutMouseFunc);
     eglutMouseButtonFunc(_eglutMouseButtonFunc);
+    eglutMouseRawFunc(_eglutMouseRawFunc);
     eglutKeyboardFunc(_eglutKeyboardFunc);
     eglutSpecialFunc(_eglutKeyboardSpecialFunc);
     eglutPasteFunc(_eglutPasteFunc);
@@ -50,9 +51,7 @@ void EGLUTWindow::runLoop() {
 
 void EGLUTWindow::setCursorDisabled(bool disabled) {
     cursorDisabled = disabled;
-    eglutSetMousePointerVisiblity(disabled ? EGLUT_POINTER_INVISIBLE : EGLUT_POINTER_VISIBLE);
-    if (disabled)
-        moveMouseToCenter = true;
+    eglutSetMousePointerLocked(disabled ? EGLUT_POINTER_LOCKED : EGLUT_POINTER_UNLOCKED);
 }
 
 void EGLUTWindow::setFullscreen(bool fullscreen) {
@@ -63,14 +62,6 @@ void EGLUTWindow::setFullscreen(bool fullscreen) {
 void EGLUTWindow::_eglutIdleFunc() {
     if (currentWindow == nullptr)
         return;
-    int cx = eglutGetWindowWidth() / 2;
-    int cy = eglutGetWindowHeight() / 2;
-    if (currentWindow->moveMouseToCenter) {
-        currentWindow->lastMouseX = cx;
-        currentWindow->lastMouseY = cy;
-        eglutWarpMousePointer(cx, cy);
-        currentWindow->moveMouseToCenter = false;
-    }
     currentWindow->updateGamepad();
     eglutPostRedisplay();
 }
@@ -92,16 +83,13 @@ void EGLUTWindow::_eglutReshapeFunc(int w, int h) {
 void EGLUTWindow::_eglutMouseFunc(int x, int y) {
     if (currentWindow == nullptr)
         return;
-    if (currentWindow->cursorDisabled) {
-        if (x != currentWindow->lastMouseX || y != currentWindow->lastMouseY) {
-            currentWindow->onMouseRelativePosition(x - currentWindow->lastMouseX, y - currentWindow->lastMouseY);
-            currentWindow->moveMouseToCenter = true;
-            currentWindow->lastMouseX = x;
-            currentWindow->lastMouseY = y;
-        }
-    } else {
-        currentWindow->onMousePosition(x, y);
-    }
+    currentWindow->onMousePosition(x, y);
+}
+
+void EGLUTWindow::_eglutMouseRawFunc(double x, double y) {
+    if (currentWindow == nullptr)
+        return;
+    currentWindow->onMouseRelativePosition(x, y);
 }
 
 void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
@@ -118,7 +106,7 @@ void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
 
 void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
     if (currentWindow == nullptr ||
-            strcmp(str, "\t") == 0 || strcmp(str, "\26") == 0 || strcmp(str, "\33") == 0) // \t, paste, esc
+        strcmp(str, "\t") == 0 || strcmp(str, "\26") == 0 || strcmp(str, "\33") == 0) // \t, paste, esc
         return;
     if (action == EGLUT_KEY_PRESS || action == EGLUT_KEY_REPEAT) {
         if (str[0] == 13 && str[1] == 0)
