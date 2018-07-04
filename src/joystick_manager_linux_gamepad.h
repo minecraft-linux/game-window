@@ -3,7 +3,6 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <memory>
-#include <GLFW/glfw3.h>
 #include <game_window.h>
 #include <gamepad/gamepad_ids.h>
 #include <gamepad/gamepad.h>
