@@ -4,12 +4,7 @@ project(eglut LANGUAGES CXX)
 
 find_package(PNG REQUIRED)
 
-set(GAMEWINDOW_SYSTEM_DEFAULT EGLUT)
-if (APPLE)
-    set(GAMEWINDOW_SYSTEM_DEFAULT GLFW)
-endif()
-
-set(GAMEWINDOW_SYSTEM ${GAMEWINDOW_SYSTEM_DEFAULT} CACHE STRING "The implementation to use for windows - EGLUT or GLFW")
+include(BuildSettings.cmake)
 
 set(GAMEWINDOW_SOURCES include/game_window.h include/game_window_manager.h src/game_window_manager.cpp)
 set(GAMEWINDOW_SOURCES_LINUX_GAMEPAD src/joystick_manager_linux_gamepad.cpp src/joystick_manager_linux_gamepad.h src/window_with_linux_gamepad.cpp src/window_with_linux_gamepad.h)
