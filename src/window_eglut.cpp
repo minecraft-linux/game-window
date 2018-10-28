@@ -108,7 +108,8 @@ void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
 
 void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
     if (currentWindow == nullptr ||
-        strcmp(str, "\t") == 0 || strcmp(str, "\26") == 0 || strcmp(str, "\33") == 0) // \t, paste, esc
+        strcmp(str, "\t") == 0 || strcmp(str, "\03") == 0 || strcmp(str, "\26") == 0 ||
+        strcmp(str, "\33") == 0) // \t, copy, paste, esc
         return;
     if (action == EGLUT_KEY_PRESS || action == EGLUT_KEY_REPEAT) {
         if (str[0] == 13 && str[1] == 0)
@@ -177,4 +178,8 @@ void EGLUTWindow::_eglutCloseWindowFunc() {
 void EGLUTWindow::getWindowSize(int& width, int& height) const {
     width = this->width;
     height = this->height;
+}
+
+void EGLUTWindow::setClipboardText(std::string const &text) {
+    eglutSetClipboardText(text.c_str());
 }

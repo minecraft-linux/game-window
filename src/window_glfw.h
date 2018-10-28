@@ -49,4 +49,6 @@ public:
 
     void getWindowSize(int& width, int& height) const override;
 
+    void setClipboardText(std::string const& text) override;
+
 };
