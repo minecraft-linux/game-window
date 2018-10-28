@@ -138,8 +138,10 @@ void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y)
 int GLFWGameWindow::getKeyMinecraft(int keyCode) {
     if (keyCode == GLFW_KEY_ESCAPE)
         return 27;
-    if (keyCode == GLFW_KEY_LEFT_SHIFT)
+    if (keyCode == GLFW_KEY_LEFT_SHIFT || keyCode == GLFW_KEY_RIGHT_SHIFT)
         return 16;
+    if (keyCode == GLFW_KEY_LEFT_CONTROL || keyCode == GLFW_KEY_RIGHT_CONTROL)
+        return 17;
     if (keyCode >= GLFW_KEY_F1 && keyCode <= GLFW_KEY_F12)
         return keyCode - GLFW_KEY_F1 + 112;
     return keyCode;

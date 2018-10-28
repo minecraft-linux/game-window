@@ -120,14 +120,24 @@ void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
 }
 
 int EGLUTWindow::getKeyMinecraft(int keyCode) {
-    if (keyCode == 65505)
+    if (keyCode == 65505 || keyCode == 65506) // left/right shift
         return 16;
+    if (keyCode == 65507 || keyCode == 65508) // left/right control
+        return 17;
+    if (keyCode >= 91 && keyCode <= 93) // [\]
+        return keyCode - 91 + 219;
+    if (keyCode == 39) // '
+        return 222;
+    if (keyCode == 65515) // tab
+        return 8;
     if (keyCode >= 97 && keyCode <= 122)
         return (keyCode + 65 - 97);
     if (keyCode >= 65361 && keyCode <= 65364)
         return (keyCode + 37 - 65361);
     if (keyCode >= 65470 && keyCode <= 65481)
         return (keyCode + 112 - 65470);
+    if (keyCode >= 65456 && keyCode <= 65465) // numpad
+        return (keyCode + 96 - 65456);
 
     return keyCode;
 }
