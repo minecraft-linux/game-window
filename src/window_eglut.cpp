@@ -121,10 +121,36 @@ void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
 }
 
 int EGLUTWindow::getKeyMinecraft(int keyCode) {
+    // TODO: insert (45), numpad (96-111), numlock (133), scroll (145)
+    printf("E %i\n", keyCode);
     if (keyCode == 65505 || keyCode == 65506) // left/right shift
         return 16;
     if (keyCode == 65507 || keyCode == 65508) // left/right control
         return 17;
+    if (keyCode == 65509) // caps lock
+        return 20;
+    if (keyCode == 65307) // esc
+        return 27;
+    if (keyCode == 65293) // enter
+        return 13;
+    if (keyCode >= 65365 && keyCode <= 65367) // pg up, pg down, end
+        return keyCode - 65365 + 33;
+    if (keyCode == 65360) // home
+        return 36;
+    if (keyCode == 65288) // backspace
+        return 8;
+    if (keyCode == 65289) // tab
+        return 9;
+    if (keyCode == 65535) // delete
+        return 46;
+    if (keyCode == 59) // ;
+        return 186;
+    if (keyCode == 61) // =
+        return 187;
+    if (keyCode >= 44 && keyCode <= 47) // ,-./
+        return keyCode - 44 + 188;
+    if (keyCode == 96) // `
+        return 192;
     if (keyCode >= 91 && keyCode <= 93) // [\]
         return keyCode - 91 + 219;
     if (keyCode == 39) // '
