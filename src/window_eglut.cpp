@@ -3,29 +3,20 @@
 
 #include <cstring>
 #include <sstream>
-
-extern "C" {
 #include <eglut.h>
-}
+#include <eglut_x11.h>
 
 EGLUTWindow* EGLUTWindow::currentWindow;
 
 EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, GraphicsApi api) :
-        WindowWithLinuxJoystick(title, width, height, api), title(title), width(width), height(height), graphicsApi(api) {
-}
-
-EGLUTWindow::~EGLUTWindow() {
-    if (currentWindow == this)
-        currentWindow = nullptr;
-    if (winId != -1)
-        eglutDestroyWindow(winId);
-}
-
-void EGLUTWindow::show() {
+        WindowWithLinuxJoystick(title, width, height, api), title(title), width(width), height(height),
+        graphicsApi(api) {
     eglutInitWindowSize(width, height);
     if (graphicsApi == GraphicsApi::OPENGL_ES2)
         eglutInitAPIMask(EGLUT_OPENGL_ES2_BIT);
-    winId = eglutCreateWindow(title.c_str(), iconPath.c_str());
+    winId = eglutCreateWindow(title.c_str());
+    eglutSetWindowIcon(iconPath.c_str());
+
     eglutIdleFunc(_eglutIdleFunc);
     eglutDisplayFunc(_eglutDisplayFunc);
     eglutReshapeFunc(_eglutReshapeFunc);
@@ -37,6 +28,17 @@ void EGLUTWindow::show() {
     eglutPasteFunc(_eglutPasteFunc);
     eglutFocusFunc(_eglutFocusFunc);
     eglutCloseWindowFunc(_eglutCloseWindowFunc);
+}
+
+EGLUTWindow::~EGLUTWindow() {
+    if (currentWindow == this)
+        currentWindow = nullptr;
+    if (winId != -1)
+        eglutDestroyWindow(winId);
+}
+
+void EGLUTWindow::show() {
+    eglutShowWindow();
     currentWindow = this;
 }
 
