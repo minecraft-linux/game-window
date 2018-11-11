@@ -15,7 +15,6 @@ EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, Graphi
     if (graphicsApi == GraphicsApi::OPENGL_ES2)
         eglutInitAPIMask(EGLUT_OPENGL_ES2_BIT);
     winId = eglutCreateWindow(title.c_str());
-    eglutSetWindowIcon(iconPath.c_str());
 
     eglutIdleFunc(_eglutIdleFunc);
     eglutDisplayFunc(_eglutDisplayFunc);
@@ -35,6 +34,10 @@ EGLUTWindow::~EGLUTWindow() {
         currentWindow = nullptr;
     if (winId != -1)
         eglutDestroyWindow(winId);
+}
+
+void EGLUTWindow::setIcon(std::string const &iconPath) {
+    eglutSetWindowIcon(iconPath.c_str());
 }
 
 void EGLUTWindow::show() {

@@ -10,7 +10,6 @@ private:
     std::string title;
     int width, height;
     GraphicsApi graphicsApi;
-    std::string iconPath;
     int winId = -1;
     bool cursorDisabled = false;
     bool moveMouseToCenter = false;
@@ -36,9 +35,7 @@ public:
 
     ~EGLUTWindow() override;
 
-    void setIcon(std::string const& iconPath) override {
-        this->iconPath = iconPath;
-    }
+    void setIcon(std::string const& iconPath) override;
 
     void show() override;
 
