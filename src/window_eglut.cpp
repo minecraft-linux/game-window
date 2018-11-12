@@ -127,7 +127,6 @@ void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
 
 int EGLUTWindow::getKeyMinecraft(int keyCode) {
     // TODO: insert (45), numpad (96-111), numlock (133), scroll (145)
-    printf("E %i\n", keyCode);
     if (keyCode == 65505 || keyCode == 65506) // left/right shift
         return 16;
     if (keyCode == 65507 || keyCode == 65508) // left/right control
