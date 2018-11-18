@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.6)
 
 project(eglut LANGUAGES CXX)
 
-find_package(PNG REQUIRED)
-
 include(BuildSettings.cmake)
 
 set(GAMEWINDOW_SOURCES include/game_window.h include/game_window_manager.h src/game_window_manager.cpp)
