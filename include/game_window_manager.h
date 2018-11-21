@@ -23,4 +23,6 @@ public:
     virtual std::shared_ptr<GameWindow>
     createWindow(const std::string& title, int width, int height, GraphicsApi api) = 0;
 
+    virtual void addGamepadMappingFile(const std::string& path) = 0;
+
 };

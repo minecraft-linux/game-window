@@ -1,5 +1,6 @@
 #include "window_manager_eglut.h"
 #include "window_eglut.h"
+#include "joystick_manager_linux_gamepad.h"
 #include <EGL/egl.h>
 #include <eglut.h>
 #include <eglut_x11.h>
@@ -21,6 +22,10 @@ GameWindowManager::ProcAddrFunc EGLUTWindowManager::getProcAddrFunc() {
 std::shared_ptr<GameWindow> EGLUTWindowManager::createWindow(const std::string& title, int width, int height,
                                                              GraphicsApi api) {
     return std::shared_ptr<GameWindow>(new EGLUTWindow(title, width, height, api));
+}
+
+void EGLUTWindowManager::addGamepadMappingFile(const std::string &path) {
+    LinuxGamepadJoystickManager::instance.loadMappingsFromFile(path);
 }
 
 

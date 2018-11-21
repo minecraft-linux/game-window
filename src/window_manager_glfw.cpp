@@ -17,6 +17,10 @@ std::shared_ptr<GameWindow> GLFWWindowManager::createWindow(const std::string& t
     return std::shared_ptr<GameWindow>(new GLFWGameWindow(title, width, height, api));
 }
 
+void GLFWWindowManager::addGamepadMappingFile(const std::string &path) {
+    GLFWJoystickManager::loadMappingsFromFile(path);
+}
+
 
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {
