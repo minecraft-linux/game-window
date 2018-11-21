@@ -44,7 +44,7 @@ void GLFWJoystickManager::update(GLFWGameWindow* window) {
         GLFWgamepadstate state;
         glfwGetGamepadState(j.first, &state);
         for (int i = 0; i <= GLFW_GAMEPAD_BUTTON_LAST; i++) {
-            if (j.second.oldButtonStates == nullptr || state.buttons[i] != j.second.oldButtonStates[i]) {
+            if (state.buttons[i] != j.second.oldButtonStates[i]) {
                 window->onGamepadButton(j.second.userId, mapButtonId(i), state.buttons[i] != 0);
             }
         }
