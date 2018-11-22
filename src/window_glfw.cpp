@@ -3,6 +3,7 @@
 
 #include <codecvt>
 #include <iomanip>
+#include <thread>
 
 #include <math.h>
 
@@ -73,9 +74,12 @@ void GLFWGameWindow::close() {
 void GLFWGameWindow::runLoop() {
     GLFWJoystickManager::addWindow(this);
     while (!glfwWindowShouldClose(window)) {
+        auto drawStart = std::chrono::system_clock::now();
         GLFWJoystickManager::update(this);
         onDraw();
         glfwSwapBuffers(window);
+        if (!focused)
+            std::this_thread::sleep_until(drawStart + std::chrono::milliseconds(1000 / 20));
         glfwPollEvents();
     }
 }
@@ -247,4 +251,5 @@ void GLFWGameWindow::_glfwWindowCloseCallback(GLFWwindow* window) {
 void GLFWGameWindow::_glfwWindowFocusCallback(GLFWwindow* window, int focused) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
     GLFWJoystickManager::onWindowFocused(user, focused == GLFW_TRUE);
+    user->focused = (focused == GLFW_TRUE);
 }
