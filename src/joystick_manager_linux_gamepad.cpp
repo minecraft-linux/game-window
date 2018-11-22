@@ -15,13 +15,20 @@ LinuxGamepadJoystickManager::LinuxGamepadJoystickManager() : joystickManager(gam
     gamepadManager.onGamepadAxis.add(std::bind(&LinuxGamepadJoystickManager::onGamepadAxis, this, _1, _2, _3));
 
     loadMappingsFromFile("gamecontrollerdb.txt");
-    joystickManager->initialize();
+}
+
+void LinuxGamepadJoystickManager::initialize() {
+    if (!initialized) {
+        initialized = true;
+        joystickManager->initialize();
+    }
 }
 
 void LinuxGamepadJoystickManager::update(WindowWithLinuxJoystick* window) {
     if (focusedWindow != window)
         return;
 
+    initialize();
     joystickManager->poll();
 }
 
@@ -31,7 +38,7 @@ void LinuxGamepadJoystickManager::loadMappingsFromFile(std::string const& path) 
         return;
     std::string line;
     while (std::getline(fs, line)) {
-        if (!line.empty()) {
+        if (!line.empty() && line[0] != '#') {
             try {
                 gamepadManager.addMapping(line);
             } catch (std::exception& e) {
@@ -42,6 +49,7 @@ void LinuxGamepadJoystickManager::loadMappingsFromFile(std::string const& path) 
 }
 
 void LinuxGamepadJoystickManager::addWindow(WindowWithLinuxJoystick* window) {
+    initialize();
     windows.insert(window);
     for (gamepad::Gamepad* gp : gamepads)
         window->onGamepadState(gp->getIndex(), true);

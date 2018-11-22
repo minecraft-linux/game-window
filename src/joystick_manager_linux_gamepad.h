@@ -14,6 +14,7 @@ class WindowWithLinuxJoystick;
 class LinuxGamepadJoystickManager {
 
 private:
+    bool initialized = false;
     std::unordered_set<WindowWithLinuxJoystick*> windows;
     WindowWithLinuxJoystick* focusedWindow;
     std::unordered_set<gamepad::Gamepad*> gamepads;
@@ -31,6 +32,8 @@ public:
     static LinuxGamepadJoystickManager instance;
 
     LinuxGamepadJoystickManager();
+
+    void initialize();
 
     void loadMappingsFromFile(std::string const& path);
 
