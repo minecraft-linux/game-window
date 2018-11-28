@@ -30,6 +30,8 @@ EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, Graphi
     eglutPasteFunc(_eglutPasteFunc);
     eglutFocusFunc(_eglutFocusFunc);
     eglutCloseWindowFunc(_eglutCloseWindowFunc);
+
+    memset(pointerIds, 0xff, sizeof(pointerIds));
 }
 
 EGLUTWindow::~EGLUTWindow() {
@@ -114,22 +116,44 @@ void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
                                             MouseButtonAction::RELEASE);
 }
 
+int EGLUTWindow::obtainTouchPointer(int eglutId) {
+    for (int i = 0; i < sizeof(pointerIds) / sizeof(int); i++) {
+        if (pointerIds[i] == eglutId)
+            return i;
+    }
+    for (int i = 0; i < sizeof(pointerIds) / sizeof(int); i++) {
+        if (pointerIds[i] == -1) {
+            pointerIds[i] = eglutId;
+            return i;
+        }
+    }
+    return sizeof(pointerIds) / sizeof(int) + eglutId;
+}
+
+void EGLUTWindow::releaseTouchPointer(int ourId) {
+    pointerIds[ourId] = -1;
+}
+
 void EGLUTWindow::_eglutTouchStartFunc(int id, double x, double y) {
     if (currentWindow == nullptr)
         return;
-    currentWindow->onTouchStart(id, x, y);
+    int ourId = currentWindow->obtainTouchPointer(id);
+    currentWindow->onTouchStart(ourId, x, y);
 }
 
 void EGLUTWindow::_eglutTouchUpdateFunc(int id, double x, double y) {
     if (currentWindow == nullptr)
         return;
-    currentWindow->onTouchUpdate(id, x, y);
+    int ourId = currentWindow->obtainTouchPointer(id);
+    currentWindow->onTouchUpdate(ourId, x, y);
 }
 
 void EGLUTWindow::_eglutTouchEndFunc(int id, double x, double y) {
     if (currentWindow == nullptr)
         return;
-    currentWindow->onTouchEnd(id, x, y);
+    int ourId = currentWindow->obtainTouchPointer(id);
+    currentWindow->onTouchEnd(ourId, x, y);
+    currentWindow->releaseTouchPointer(ourId);
 }
 
 void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {

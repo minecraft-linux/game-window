@@ -15,6 +15,7 @@ private:
     bool moveMouseToCenter = false;
     int lastMouseX = -1, lastMouseY = -1;
     bool modCTRL = false;
+    int pointerIds[16];
 
     static int getKeyMinecraft(int keyCode);
 
@@ -32,6 +33,9 @@ private:
     static void _eglutPasteFunc(const char* str, int len);
     static void _eglutFocusFunc(int action);
     static void _eglutCloseWindowFunc();
+
+    int obtainTouchPointer(int eglutId);
+    void releaseTouchPointer(int ourId);
 
 public:
     EGLUTWindow(const std::string& title, int width, int height, GraphicsApi api);
