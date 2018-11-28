@@ -30,6 +30,9 @@ public:
     using MouseButtonCallback = std::function<void (double, double, int, MouseButtonAction)>;
     using MousePositionCallback = std::function<void (double, double)>;
     using MouseScrollCallback = std::function<void (double, double, double, double)>;
+    using TouchStartCallback = std::function<void (int, double, double)>;
+    using TouchUpdateCallback = std::function<void (int, double, double)>;
+    using TouchEndCallback = std::function<void (int, double, double)>;
     using KeyboardCallback = std::function<void (int, KeyAction)>;
     using KeyboardTextCallback = std::function<void (std::string const&)>;
     using PasteCallback = std::function<void (std::string const&)>;
@@ -44,6 +47,9 @@ private:
     MouseButtonCallback mouseButtonCallback;
     MousePositionCallback mousePositionCallback, mouseRelativePositionCallback;
     MouseScrollCallback mouseScrollCallback;
+    TouchStartCallback touchStartCallback;
+    TouchUpdateCallback touchUpdateCallback;
+    TouchEndCallback touchEndCallback;
     KeyboardCallback keyboardCallback;
     KeyboardTextCallback keyboardTextCallback;
     PasteCallback pasteCallback;
@@ -83,6 +89,12 @@ public:
     void setMousePositionCallback(MousePositionCallback callback) { mousePositionCallback = std::move(callback); }
 
     void setMouseScrollCallback(MouseScrollCallback callback) { mouseScrollCallback = std::move(callback); }
+
+    void setTouchStartCallback(TouchStartCallback callback) { touchStartCallback = std::move(callback); }
+
+    void setTouchUpdateCallback(TouchUpdateCallback callback) { touchUpdateCallback = std::move(callback); }
+
+    void setTouchEndCallback(TouchEndCallback callback) { touchEndCallback = std::move(callback); }
 
     void setKeyboardCallback(KeyboardCallback callback) { keyboardCallback = std::move(callback); }
 
@@ -127,6 +139,18 @@ protected:
     void onMouseScroll(double x, double y, double dx, double dy) {
         if (mouseScrollCallback != nullptr)
             mouseScrollCallback(x, y, dx, dy);
+    }
+    void onTouchStart(int id, double x, double y) {
+        if (touchStartCallback != nullptr)
+            touchStartCallback(id, x, y);
+    }
+    void onTouchUpdate(int id, double x, double y) {
+        if (touchUpdateCallback != nullptr)
+            touchUpdateCallback(id, x, y);
+    }
+    void onTouchEnd(int id, double x, double y) {
+        if (touchEndCallback != nullptr)
+            touchEndCallback(id, x, y);
     }
     void onKeyboard(int key, KeyAction action) {
         if (keyboardCallback != nullptr)

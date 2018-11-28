@@ -22,6 +22,9 @@ EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, Graphi
     eglutMouseFunc(_eglutMouseFunc);
     eglutMouseButtonFunc(_eglutMouseButtonFunc);
     eglutMouseRawFunc(_eglutMouseRawFunc);
+    eglutTouchStartFunc(_eglutTouchStartFunc);
+    eglutTouchUpdateFunc(_eglutTouchUpdateFunc);
+    eglutTouchEndFunc(_eglutTouchEndFunc);
     eglutKeyboardFunc(_eglutKeyboardFunc);
     eglutSpecialFunc(_eglutKeyboardSpecialFunc);
     eglutPasteFunc(_eglutPasteFunc);
@@ -109,6 +112,24 @@ void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
     btn = (btn == 2 ? 3 : (btn == 3 ? 2 : btn));
     currentWindow->onMouseButton(x, y, btn, action == EGLUT_MOUSE_PRESS ? MouseButtonAction::PRESS :
                                             MouseButtonAction::RELEASE);
+}
+
+void EGLUTWindow::_eglutTouchStartFunc(int id, double x, double y) {
+    if (currentWindow == nullptr)
+        return;
+    currentWindow->onTouchStart(id, x, y);
+}
+
+void EGLUTWindow::_eglutTouchUpdateFunc(int id, double x, double y) {
+    if (currentWindow == nullptr)
+        return;
+    currentWindow->onTouchUpdate(id, x, y);
+}
+
+void EGLUTWindow::_eglutTouchEndFunc(int id, double x, double y) {
+    if (currentWindow == nullptr)
+        return;
+    currentWindow->onTouchEnd(id, x, y);
 }
 
 void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
