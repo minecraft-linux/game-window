@@ -7,9 +7,11 @@
 #include <unistd.h>
 #include <linux/limits.h>
 #include <libgen.h>
+#include <cstring>
 
 EGLUTWindowManager::EGLUTWindowManager() {
     char buf[PATH_MAX];
+    memset(buf, 0, sizeof(buf));
     readlink("/proc/self/exe", buf, sizeof(buf) - 1);
     eglutInitX11ClassInstanceName(basename(buf));
     eglutInit(0, nullptr); // the args aren't really required and are troublesome to pass with this system
