@@ -58,4 +58,6 @@ public:
 
     void setClipboardText(std::string const& text) override;
 
+    void swapBuffers() override;
+
 };

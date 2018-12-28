@@ -71,6 +71,10 @@ void EGLUTWindow::setFullscreen(bool fullscreen) {
         eglutToggleFullscreen();
 }
 
+void EGLUTWindow::swapBuffers() {
+    eglutSwapBuffers();
+}
+
 void EGLUTWindow::_eglutIdleFunc() {
     if (currentWindow == nullptr)
         return;

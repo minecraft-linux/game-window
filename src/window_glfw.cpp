@@ -77,7 +77,6 @@ void GLFWGameWindow::runLoop() {
         auto drawStart = std::chrono::system_clock::now();
         GLFWJoystickManager::update(this);
         onDraw();
-        glfwSwapBuffers(window);
         if (!focused)
             std::this_thread::sleep_until(drawStart + std::chrono::milliseconds(1000 / 20));
         glfwPollEvents();
@@ -103,6 +102,10 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
 
 void GLFWGameWindow::setClipboardText(std::string const &text) {
     glfwSetClipboardString(window, text.c_str());
+}
+
+void GLFWGameWindow::swapBuffers() {
+    glfwSwapBuffers(window);
 }
 
 void GLFWGameWindow::_glfwWindowSizeCallback(GLFWwindow* window, int w, int h) {
