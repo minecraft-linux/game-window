@@ -116,14 +116,17 @@ void GLFWGameWindow::_glfwWindowSizeCallback(GLFWwindow* window, int w, int h) {
 void GLFWGameWindow::_glfwCursorPosCallback(GLFWwindow* window, double x, double y) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
 
-    x *= user->getRelativeScale();
-    y *= user->getRelativeScale();
-
     if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
-        user->onMouseRelativePosition(x - user->lastMouseX, y - user->lastMouseY);
+        double dx = (x - user->lastMouseX) * user->getRelativeScale();
+        double dy = (y - user->lastMouseY) * user->getRelativeScale();
+
+        user->onMouseRelativePosition(dx, dy);
         user->lastMouseX = x;
         user->lastMouseY = y;
     } else {
+        x *= user->getRelativeScale();
+        y *= user->getRelativeScale();
+
         user->onMousePosition(x, y);
     }
 }
