@@ -176,6 +176,8 @@ void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
 
 int EGLUTWindow::getKeyMinecraft(int keyCode) {
     // TODO: insert (45), numpad (96-111), numlock (133), scroll (145)
+    if (keycode > 65535)
+        return;
     if (keyCode == 65505 || keyCode == 65506) // left/right shift
         return 16;
     if (keyCode == 65507 || keyCode == 65508) // left/right control
@@ -225,11 +227,12 @@ int EGLUTWindow::getKeyMinecraft(int keyCode) {
 void EGLUTWindow::_eglutKeyboardSpecialFunc(int key, int action) {
     if (currentWindow == nullptr)
         return;
+    if (key > 65535)
+        return;
     if (key == 65507)
         currentWindow->modCTRL = (action != EGLUT_KEY_RELEASE);
-    if (currentWindow->modCTRL && (key == 86 || key == 118) && action == EGLUT_KEY_PRESS) {
+    if (currentWindow->modCTRL && (key == 86 || key == 118) && action == EGLUT_KEY_PRESS)
         eglutRequestPaste();
-    }
     int mKey = getKeyMinecraft(key);
     KeyAction enumAction = (action == EGLUT_KEY_PRESS ? KeyAction::PRESS :
                             (action == EGLUT_KEY_REPEAT ? KeyAction::REPEAT : KeyAction::RELEASE));
