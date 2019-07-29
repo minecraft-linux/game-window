@@ -231,6 +231,9 @@ int GLFWGameWindow::getKeyMinecraft(int keyCode) {
 
 void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
+    if (action == GLFW_PRESS && mods & GLFW_MOD_CONTROL && key == GLFW_KEY_V) {
+        user->onPaste(glfwGetClipboardString(window));
+    }
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         if (key == GLFW_KEY_BACKSPACE)
             user->onKeyboardText("\x08");
