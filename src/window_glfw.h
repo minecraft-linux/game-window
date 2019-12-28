@@ -25,6 +25,7 @@ private:
     static void _glfwCharCallback(GLFWwindow* window, unsigned int ch);
     static void _glfwWindowCloseCallback(GLFWwindow* window);
     static void _glfwWindowFocusCallback(GLFWwindow* window, int focused);
+    static void _glfwWindowContentScaleCallback(GLFWwindow* window, float scalex, float scaley);
 
 public:
 

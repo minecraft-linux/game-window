@@ -31,6 +31,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetKeyCallback(window, _glfwKeyCallback);
     glfwSetCharCallback(window, _glfwCharCallback);
     glfwSetWindowFocusCallback(window, _glfwWindowFocusCallback);
+    glfwSetWindowContentScaleCallback(window, _glfwWindowContentScaleCallback);
     glfwMakeContextCurrent(window);
 
     setRelativeScale();
@@ -265,4 +266,9 @@ void GLFWGameWindow::_glfwWindowFocusCallback(GLFWwindow* window, int focused) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
     GLFWJoystickManager::onWindowFocused(user, focused == GLFW_TRUE);
     user->focused = (focused == GLFW_TRUE);
+}
+
+void GLFWGameWindow::_glfwWindowContentScaleCallback(GLFWwindow* window, float scalex, float scaley) {
+    GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
+    user->setRelativeScale();
 }
