@@ -225,11 +225,12 @@ int EGLUTWindow::getKeyMinecraft(int keyCode) {
 void EGLUTWindow::_eglutKeyboardSpecialFunc(int key, int action) {
     if (currentWindow == nullptr)
         return;
+    if (key > 65535)
+        return;
     if (key == 65507)
         currentWindow->modCTRL = (action != EGLUT_KEY_RELEASE);
-    if (currentWindow->modCTRL && (key == 86 || key == 118) && action == EGLUT_KEY_PRESS) {
+    if (currentWindow->modCTRL && (key == 86 || key == 118) && action == EGLUT_KEY_PRESS)
         eglutRequestPaste();
-    }
     int mKey = getKeyMinecraft(key);
     KeyAction enumAction = (action == EGLUT_KEY_PRESS ? KeyAction::PRESS :
                             (action == EGLUT_KEY_REPEAT ? KeyAction::REPEAT : KeyAction::RELEASE));
