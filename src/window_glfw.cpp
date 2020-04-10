@@ -65,6 +65,7 @@ void GLFWGameWindow::getWindowSize(int& width, int& height) const {
 }
 
 void GLFWGameWindow::show() {
+    GLFWJoystickManager::addWindow(this);
     glfwShowWindow(window);
 }
 
@@ -72,16 +73,9 @@ void GLFWGameWindow::close() {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-void GLFWGameWindow::runLoop() {
-    GLFWJoystickManager::addWindow(this);
-    while (!glfwWindowShouldClose(window)) {
-        auto drawStart = std::chrono::system_clock::now();
-        GLFWJoystickManager::update(this);
-        onDraw();
-        if (!focused)
-            std::this_thread::sleep_until(drawStart + std::chrono::milliseconds(1000 / 20));
-        glfwPollEvents();
-    }
+void GLFWGameWindow::pollEvents() {
+    glfwPollEvents();
+    GLFWJoystickManager::update(this);
 }
 
 void GLFWGameWindow::setCursorDisabled(bool disabled) {
@@ -107,6 +101,10 @@ void GLFWGameWindow::setClipboardText(std::string const &text) {
 
 void GLFWGameWindow::swapBuffers() {
     glfwSwapBuffers(window);
+}
+
+void GLFWGameWindow::setSwapInterval(int interval) {
+    glfwSwapInterval(interval);
 }
 
 void GLFWGameWindow::_glfwWindowSizeCallback(GLFWwindow* window, int w, int h) {

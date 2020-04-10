@@ -43,7 +43,7 @@ public:
 
     void close() override;
 
-    void runLoop() override;
+    void pollEvents() override;
 
     void setCursorDisabled(bool disabled) override;
 
@@ -54,5 +54,7 @@ public:
     void setClipboardText(std::string const& text) override;
 
     void swapBuffers() override;
+
+    void setSwapInterval(int interval) override;
 
 };

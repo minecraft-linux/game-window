@@ -70,7 +70,7 @@ public:
 
     virtual void close() = 0;
 
-    virtual void runLoop() = 0;
+    virtual void pollEvents() = 0;
 
     virtual void setCursorDisabled(bool disabled) = 0;
 
@@ -81,6 +81,8 @@ public:
     virtual void setClipboardText(std::string const& text) = 0;
 
     virtual void swapBuffers() = 0;
+
+    virtual void setSwapInterval(int interval) = 0;
 
     void setDrawCallback(DrawCallback callback) { drawCallback = std::move(callback); }
 
