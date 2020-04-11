@@ -78,12 +78,12 @@ void GLFWJoystickManager::onWindowFocused(GLFWGameWindow* window, bool focused) 
 }
 
 void GLFWJoystickManager::_glfwJoystickCallback(int joystick, int action) {
-    if (!glfwJoystickIsGamepad(joystick))
-        return;
-
     auto js = connectedJoysticks.find(joystick);
     int userId;
     if (action == GLFW_CONNECTED) {
+        if (!glfwJoystickIsGamepad(joystick))
+            return;
+
         if (js != connectedJoysticks.end())
             return;
         userId = nextUnassignedUserId();
