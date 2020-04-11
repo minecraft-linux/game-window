@@ -17,7 +17,7 @@ private:
     bool modCTRL = false;
     int pointerIds[16];
 
-    static int getKeyMinecraft(int keyCode);
+    static KeyCode getKeyMinecraft(int keyCode);
 
     static void _eglutIdleFunc();
     static void _eglutDisplayFunc();
@@ -48,7 +48,7 @@ public:
 
     void close() override;
 
-    void runLoop() override;
+    void pollEvents() override;
 
     void setCursorDisabled(bool disabled) override;
 
@@ -59,5 +59,7 @@ public:
     void setClipboardText(std::string const& text) override;
 
     void swapBuffers() override;
+
+    void setSwapInterval(int interval) override;
 
 };

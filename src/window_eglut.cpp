@@ -4,7 +4,9 @@
 #include <cstring>
 #include <sstream>
 #include <eglut.h>
-#include <eglut_x11.h>
+#define XK_MISCELLANY
+#define XK_LATIN1
+#include <X11/keysymdef.h>
 
 EGLUTWindow* EGLUTWindow::currentWindow;
 
@@ -48,6 +50,7 @@ void EGLUTWindow::setIcon(std::string const &iconPath) {
 void EGLUTWindow::show() {
     eglutShowWindow();
     currentWindow = this;
+    addWindowToGamepadManager();
 }
 
 void EGLUTWindow::close() {
@@ -56,9 +59,8 @@ void EGLUTWindow::close() {
     currentWindow->winId = -1;
 }
 
-void EGLUTWindow::runLoop() {
-    addWindowToGamepadManager();
-    eglutMainLoop();
+void EGLUTWindow::pollEvents() {
+    eglutPollEvents();
 }
 
 void EGLUTWindow::setCursorDisabled(bool disabled) {
@@ -73,6 +75,10 @@ void EGLUTWindow::setFullscreen(bool fullscreen) {
 
 void EGLUTWindow::swapBuffers() {
     eglutSwapBuffers();
+}
+
+void EGLUTWindow::setSwapInterval(int interval) {
+    eglutSwapInterval(interval);
 }
 
 void EGLUTWindow::_eglutIdleFunc() {
@@ -174,52 +180,55 @@ void EGLUTWindow::_eglutKeyboardFunc(char str[5], int action) {
     }
 }
 
-int EGLUTWindow::getKeyMinecraft(int keyCode) {
-    // TODO: insert (45), numpad (96-111), numlock (133), scroll (145)
-    if (keyCode == 65505 || keyCode == 65506) // left/right shift
-        return 16;
-    if (keyCode == 65507 || keyCode == 65508) // left/right control
-        return 17;
-    if (keyCode == 65509) // caps lock
-        return 20;
-    if (keyCode == 65307) // esc
-        return 27;
-    if (keyCode == 65293) // enter
-        return 13;
-    if (keyCode >= 65365 && keyCode <= 65367) // pg up, pg down, end
-        return keyCode - 65365 + 33;
-    if (keyCode == 65360) // home
-        return 36;
-    if (keyCode == 65288) // backspace
-        return 8;
-    if (keyCode == 65289) // tab
-        return 9;
-    if (keyCode == 65535) // delete
-        return 46;
-    if (keyCode == 59) // ;
-        return 186;
-    if (keyCode == 61) // =
-        return 187;
-    if (keyCode >= 44 && keyCode <= 47) // ,-./
-        return keyCode - 44 + 188;
-    if (keyCode == 96) // `
-        return 192;
-    if (keyCode >= 91 && keyCode <= 93) // [\]
-        return keyCode - 91 + 219;
-    if (keyCode == 39) // '
-        return 222;
-    if (keyCode == 65515) // tab
-        return 8;
-    if (keyCode >= 97 && keyCode <= 122)
-        return (keyCode + 65 - 97);
-    if (keyCode >= 65361 && keyCode <= 65364)
-        return (keyCode + 37 - 65361);
-    if (keyCode >= 65470 && keyCode <= 65481)
-        return (keyCode + 112 - 65470);
-    if (keyCode >= 65456 && keyCode <= 65465) // numpad
-        return (keyCode + 96 - 65456);
+KeyCode EGLUTWindow::getKeyMinecraft(int keyCode) {
+    if (keyCode >= XK_A && keyCode <= XK_Z)
+        return (KeyCode) (keyCode - XK_A + (int) KeyCode::A);
+    if (keyCode >= XK_a && keyCode <= XK_z)
+        return (KeyCode) (keyCode - XK_a + (int) KeyCode::A);
+    if (keyCode >= XK_F1 && keyCode <= XK_F12)
+        return (KeyCode) (keyCode - XK_F1 + (int) KeyCode::FN1);
+    if (keyCode >= XK_KP_0 && keyCode <= XK_KP_9)
+        return (KeyCode) (keyCode - XK_KP_0 + 96);
 
-    return keyCode;
+    switch (keyCode) {
+        case XK_BackSpace: return KeyCode::BACKSPACE;
+        case XK_Tab: return KeyCode::TAB;
+        case XK_Return: return KeyCode::ENTER;
+        case XK_Shift_L: return KeyCode::LEFT_SHIFT;
+        case XK_Shift_R: return KeyCode::RIGHT_SHIFT;
+        case XK_Control_L: return KeyCode::LEFT_CTRL;
+        case XK_Control_R: return KeyCode::RIGHT_CTRL;
+        case XK_Pause: return KeyCode::PAUSE;
+        case XK_Caps_Lock: return KeyCode::CAPS_LOCK;
+        case XK_Escape: return KeyCode::ESCAPE;
+        case XK_Page_Up: return KeyCode::PAGE_UP;
+        case XK_Page_Down: return KeyCode::PAGE_DOWN;
+        case XK_End: return KeyCode::END;
+        case XK_Home: return KeyCode::HOME;
+        case XK_Left: return KeyCode::LEFT;
+        case XK_Up: return KeyCode::UP;
+        case XK_Right: return KeyCode::RIGHT;
+        case XK_Down: return KeyCode::DOWN;
+        case XK_Insert: return KeyCode::INSERT;
+        case XK_Delete: return KeyCode::DELETE;
+        case XK_Num_Lock: return KeyCode::NUM_LOCK;
+        case XK_Scroll_Lock: return KeyCode::SCROLL_LOCK;
+        case XK_semicolon: return KeyCode::SEMICOLON;
+        case XK_equal: return KeyCode::EQUAL;
+        case XK_comma: return KeyCode::COMMA;
+        case XK_minus: return KeyCode::MINUS;
+        case XK_period: return KeyCode::PERIOD;
+        case XK_slash: return KeyCode::SLASH;
+        case XK_grave: return KeyCode::GRAVE;
+        case XK_bracketleft: return KeyCode::LEFT_BRACKET;
+        case XK_backslash: return KeyCode::BACKSLASH;
+        case XK_bracketright: return KeyCode::RIGHT_BRACKET;
+        case XK_apostrophe: return KeyCode::APOSTROPHE;
+    }
+
+    if (keyCode < 256)
+        return (KeyCode) keyCode;
+    return KeyCode::UNKNOWN;
 }
 
 void EGLUTWindow::_eglutKeyboardSpecialFunc(int key, int action) {
@@ -230,7 +239,7 @@ void EGLUTWindow::_eglutKeyboardSpecialFunc(int key, int action) {
     if (currentWindow->modCTRL && (key == 86 || key == 118) && action == EGLUT_KEY_PRESS) {
         eglutRequestPaste();
     }
-    int mKey = getKeyMinecraft(key);
+    KeyCode mKey = getKeyMinecraft(key);
     KeyAction enumAction = (action == EGLUT_KEY_PRESS ? KeyAction::PRESS :
                             (action == EGLUT_KEY_REPEAT ? KeyAction::REPEAT : KeyAction::RELEASE));
     currentWindow->onKeyboard(mKey, enumAction);

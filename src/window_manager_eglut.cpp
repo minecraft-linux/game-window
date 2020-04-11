@@ -1,3 +1,5 @@
+#define EGL_NO_X11
+#define EGLUT_NO_X11_INCLUDE
 #include "window_manager_eglut.h"
 #include "window_eglut.h"
 #include "joystick_manager_linux_gamepad.h"
