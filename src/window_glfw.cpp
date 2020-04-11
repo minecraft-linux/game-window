@@ -148,84 +148,89 @@ void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y)
     user->onMouseScroll(cx, cy, x, y);
 }
 
-int GLFWGameWindow::getKeyMinecraft(int keyCode) {
+KeyCode GLFWGameWindow::getKeyMinecraft(int keyCode) {
     if (keyCode >= GLFW_KEY_F1 && keyCode <= GLFW_KEY_F12)
-        return keyCode - GLFW_KEY_F1 + 112;
+        return (KeyCode) (keyCode - GLFW_KEY_F1 + (int) KeyCode::FN1);
     switch (keyCode) {
         case GLFW_KEY_BACKSPACE:
-            return 8;
+            return KeyCode::BACKSPACE;
         case GLFW_KEY_TAB:
-            return 9;
+            return KeyCode::TAB;
         case GLFW_KEY_ENTER:
-            return 13;
+            return KeyCode::ENTER;
         case GLFW_KEY_LEFT_SHIFT:
+            return KeyCode::LEFT_SHIFT;
         case GLFW_KEY_RIGHT_SHIFT:
-            return 16;
+            return KeyCode::RIGHT_SHIFT;
         case GLFW_KEY_LEFT_CONTROL:
+            return KeyCode::LEFT_CTRL;
         case GLFW_KEY_RIGHT_CONTROL:
-            return 17;
+            return KeyCode::RIGHT_CTRL;
         case GLFW_KEY_PAUSE:
-            return 19;
+            return KeyCode::PAUSE;
         case GLFW_KEY_CAPS_LOCK:
-            return 20;
+            return KeyCode::CAPS_LOCK;
         case GLFW_KEY_ESCAPE:
-            return 27;
+            return KeyCode::ESCAPE;
         case GLFW_KEY_PAGE_UP:
-            return 33;
+            return KeyCode::PAGE_UP;
         case GLFW_KEY_PAGE_DOWN:
-            return 34;
+            return KeyCode::PAGE_DOWN;
         case GLFW_KEY_END:
-            return 35;
+            return KeyCode::END;
         case GLFW_KEY_HOME:
-            return 36;
+            return KeyCode::HOME;
         case GLFW_KEY_LEFT:
-            return 37;
+            return KeyCode::LEFT;
         case GLFW_KEY_UP:
-            return 38;
+            return KeyCode::UP;
         case GLFW_KEY_RIGHT:
-            return 39;
+            return KeyCode::RIGHT;
         case GLFW_KEY_DOWN:
-            return 40;
+            return KeyCode::DOWN;
         case GLFW_KEY_INSERT:
-            return 45;
+            return KeyCode::INSERT;
         case GLFW_KEY_DELETE:
-            return 46;
+            return KeyCode::DELETE;
         case GLFW_KEY_NUM_LOCK:
-            return 144;
+            return KeyCode::NUM_LOCK;
         case GLFW_KEY_SCROLL_LOCK:
-            return 145;
+            return KeyCode::SCROLL_LOCK;
         case GLFW_KEY_SEMICOLON:
-            return 186;
+            return KeyCode::SEMICOLON;
         case GLFW_KEY_EQUAL:
-            return 187;
+            return KeyCode::EQUAL;
         case GLFW_KEY_COMMA:
-            return 188;
+            return KeyCode::COMMA;
         case GLFW_KEY_MINUS:
-            return 189;
+            return KeyCode::MINUS;
         case GLFW_KEY_PERIOD:
-            return 190;
+            return KeyCode::PERIOD;
         case GLFW_KEY_SLASH:
-            return 191;
+            return KeyCode::SLASH;
         case GLFW_KEY_GRAVE_ACCENT:
-            return 192;
+            return KeyCode::GRAVE;
         case GLFW_KEY_LEFT_BRACKET:
-            return 219;
+            return KeyCode::LEFT_BRACKET;
         case GLFW_KEY_BACKSLASH:
-            return 220;
+            return KeyCode::BACKSLASH;
         case GLFW_KEY_RIGHT_BRACKET:
-            return 221;
+            return KeyCode::RIGHT_BRACKET;
         case GLFW_KEY_APOSTROPHE:
-            return 222;
+            return KeyCode::APOSTROPHE;
 
-            // Extra key mappings that are not necessarily correct but map to completely wrong keys otherwise
         case GLFW_KEY_LEFT_SUPER:
+            return KeyCode::LEFT_SUPER;
         case GLFW_KEY_RIGHT_SUPER:
-            return 1;
+            return KeyCode::RIGHT_SUPER;
         case GLFW_KEY_LEFT_ALT:
+            return KeyCode::LEFT_ALT;
         case GLFW_KEY_RIGHT_ALT:
-            return 2;
+            return KeyCode::RIGHT_ALT;
     }
-    return keyCode;
+    if (keyCode < 256)
+        return (KeyCode) keyCode;
+    return KeyCode::UNKNOWN;
 }
 
 void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {

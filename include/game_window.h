@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include "key_mapping.h"
 
 enum class GraphicsApi {
     OPENGL, OPENGL_ES2
@@ -33,7 +34,7 @@ public:
     using TouchStartCallback = std::function<void (int, double, double)>;
     using TouchUpdateCallback = std::function<void (int, double, double)>;
     using TouchEndCallback = std::function<void (int, double, double)>;
-    using KeyboardCallback = std::function<void (int, KeyAction)>;
+    using KeyboardCallback = std::function<void (KeyCode, KeyAction)>;
     using KeyboardTextCallback = std::function<void (std::string const&)>;
     using PasteCallback = std::function<void (std::string const&)>;
     using GamepadStateCallback = std::function<void (int, bool)>;
@@ -156,7 +157,7 @@ protected:
         if (touchEndCallback != nullptr)
             touchEndCallback(id, x, y);
     }
-    void onKeyboard(int key, KeyAction action) {
+    void onKeyboard(KeyCode key, KeyAction action) {
         if (keyboardCallback != nullptr)
             keyboardCallback(key, action);
     }
