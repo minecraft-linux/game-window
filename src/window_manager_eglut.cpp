@@ -1,15 +1,15 @@
-#define EGL_NO_X11
 #define EGLUT_NO_X11_INCLUDE
 #include "window_manager_eglut.h"
 #include "window_eglut.h"
 #include "joystick_manager_linux_gamepad.h"
-#include <EGL/egl.h>
 #include <eglut.h>
 #include <eglut_x11.h>
 #include <unistd.h>
 #include <linux/limits.h>
 #include <libgen.h>
 #include <cstring>
+
+extern "C" void eglGetProcAddress();
 
 EGLUTWindowManager::EGLUTWindowManager() {
     char buf[PATH_MAX];
