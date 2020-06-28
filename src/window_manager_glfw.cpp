@@ -1,6 +1,7 @@
 #include "window_manager_glfw.h"
 #include "window_glfw.h"
 #include "joystick_manager_glfw.h"
+#include <stdexcept>
 
 GLFWWindowManager::GLFWWindowManager() {
     if (glfwInit() != GLFW_TRUE)
