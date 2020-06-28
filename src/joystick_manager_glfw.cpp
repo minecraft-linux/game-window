@@ -12,10 +12,6 @@ std::unordered_set<int> GLFWJoystickManager::userIds;
 void GLFWJoystickManager::init() {
     glfwSetJoystickCallback(_glfwJoystickCallback);
     loadMappingsFromFile("gamecontrollerdb.txt");
-    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++) {
-        if (glfwJoystickPresent(i) && glfwJoystickIsGamepad(i))
-            _glfwJoystickCallback(i, GLFW_CONNECTED);
-    }
 }
 
 void GLFWJoystickManager::loadMappingsFromFile(std::string const& path) {
@@ -26,6 +22,10 @@ void GLFWJoystickManager::loadMappingsFromFile(std::string const& path) {
     while (std::getline(fs, line)) {
         if (!line.empty())
             glfwUpdateGamepadMappings(line.c_str());
+    }
+    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++) {
+        if (glfwJoystickPresent(i) && glfwJoystickIsGamepad(i))
+            _glfwJoystickCallback(i, GLFW_CONNECTED);
     }
 }
 
