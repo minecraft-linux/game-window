@@ -74,7 +74,10 @@ void GLFWGameWindow::close() {
 }
 
 void GLFWGameWindow::pollEvents() {
+    resized = false;
     glfwPollEvents();
+    if(resized)
+      onWindowSizeChanged(windowedWidth, windowedHeight);
     GLFWJoystickManager::update(this);
 }
 
@@ -109,7 +112,9 @@ void GLFWGameWindow::setSwapInterval(int interval) {
 
 void GLFWGameWindow::_glfwWindowSizeCallback(GLFWwindow* window, int w, int h) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
-    user->onWindowSizeChanged(w, h);
+    user->windowedWidth = w;
+    user->windowedHeight = h;
+    user->resized = true;
 }
 
 void GLFWGameWindow::_glfwCursorPosCallback(GLFWwindow* window, double x, double y) {

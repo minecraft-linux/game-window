@@ -11,6 +11,7 @@ private:
     int windowedX = -1, windowedY = -1;
     int windowedWidth = -1, windowedHeight = -1;
     int relativeScale;
+    bool resized = false;
     bool focused = true;
 
     friend class GLFWJoystickManager;
