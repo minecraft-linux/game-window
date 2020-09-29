@@ -25,4 +25,8 @@ public:
 
     virtual void addGamepadMappingFile(const std::string& path) = 0;
 
+    virtual std::string getClassInstanceName() = 0;
+
+    virtual void setClassInstanceName(std::string classname) = 0;
+
 };

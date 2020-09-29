@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
+GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api, std::string classname) :
         GameWindow(title, width, height, api), windowedWidth(width), windowedHeight(height) {
     glfwDefaultWindowHints();
     if (api == GraphicsApi::OPENGL_ES2) {
@@ -21,6 +21,8 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
+    glfwWindowHintString(GLFW_X11_CLASS_NAME, classname.data());
+    glfwWindowHintString(GLFW_X11_INSTANCE_NAME, classname.data());
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, _glfwWindowSizeCallback);

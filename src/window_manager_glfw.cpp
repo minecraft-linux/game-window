@@ -15,13 +15,20 @@ GameWindowManager::ProcAddrFunc GLFWWindowManager::getProcAddrFunc() {
 
 std::shared_ptr<GameWindow> GLFWWindowManager::createWindow(const std::string& title, int width, int height,
                                                              GraphicsApi api) {
-    return std::shared_ptr<GameWindow>(new GLFWGameWindow(title, width, height, api));
+    return std::shared_ptr<GameWindow>(new GLFWGameWindow(title, width, height, api, classname));
 }
 
 void GLFWWindowManager::addGamepadMappingFile(const std::string &path) {
     GLFWJoystickManager::loadMappingsFromFile(path);
 }
 
+std::string GLFWWindowManager::getClassInstanceName() {
+    return classname;
+}
+
+void GLFWWindowManager::setClassInstanceName(std::string classname) {
+    this->classname = classname;
+}
 
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {

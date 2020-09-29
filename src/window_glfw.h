@@ -29,7 +29,7 @@ private:
 
 public:
 
-    GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api);
+    GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api, std::string classname);
 
     ~GLFWGameWindow() override;
 

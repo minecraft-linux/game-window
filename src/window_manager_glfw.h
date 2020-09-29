@@ -3,7 +3,7 @@
 #include "game_window_manager.h"
 
 class GLFWWindowManager : public GameWindowManager {
-
+    std::string classname;
 public:
     GLFWWindowManager();
 
@@ -13,4 +13,7 @@ public:
 
     void addGamepadMappingFile(const std::string& path) override;
 
+    std::string getClassInstanceName() override;
+
+    void setClassInstanceName(std::string classname) override;
 };
