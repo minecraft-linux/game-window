@@ -33,6 +33,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetWindowFocusCallback(window, _glfwWindowFocusCallback);
     glfwSetWindowContentScaleCallback(window, _glfwWindowContentScaleCallback);
     glfwSetTouchCallback(window, _glfwTouchCallback);
+    glfwSetInputMode(window, GLFW_TOUCH, GLFW_TRUE);
     glfwMakeContextCurrent(window);
 
     setRelativeScale();
