@@ -26,6 +26,7 @@ private:
     static void _glfwWindowCloseCallback(GLFWwindow* window);
     static void _glfwWindowFocusCallback(GLFWwindow* window, int focused);
     static void _glfwWindowContentScaleCallback(GLFWwindow* window, float scalex, float scaley);
+    static void _glfwTouchCallback(GLFWwindow* window, int touchid ,int action, double x, double y);
 
 public:
 

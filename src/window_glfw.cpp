@@ -32,6 +32,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetCharCallback(window, _glfwCharCallback);
     glfwSetWindowFocusCallback(window, _glfwWindowFocusCallback);
     glfwSetWindowContentScaleCallback(window, _glfwWindowContentScaleCallback);
+    glfwSetTouchCallback(window, _glfwTouchCallback);
     glfwMakeContextCurrent(window);
 
     setRelativeScale();
@@ -274,4 +275,21 @@ void GLFWGameWindow::_glfwWindowFocusCallback(GLFWwindow* window, int focused) {
 void GLFWGameWindow::_glfwWindowContentScaleCallback(GLFWwindow* window, float scalex, float scaley) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
     user->setRelativeScale();
+}
+
+void GLFWGameWindow::_glfwTouchCallback(GLFWwindow *window, int touchid, int action, double x, double y) {
+    GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
+    switch (action) {
+    case GLFW_PRESS:
+        user->onTouchStart(touchid, x, y);
+        break;
+    case GLFW_MOVE:
+        user->onTouchUpdate(touchid, x, y);
+        break;
+    case GLFW_RELEASE:
+        user->onTouchEnd(touchid, x, y);
+        break;
+    default:
+        break;
+    }
 }
