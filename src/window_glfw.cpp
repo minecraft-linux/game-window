@@ -21,6 +21,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
+    glfwSetInputMode(window, GLFW_TOUCH, GLFW_TRUE);
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, _glfwWindowSizeCallback);
@@ -33,7 +34,6 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     glfwSetWindowFocusCallback(window, _glfwWindowFocusCallback);
     glfwSetWindowContentScaleCallback(window, _glfwWindowContentScaleCallback);
     glfwSetTouchCallback(window, _glfwTouchCallback);
-    glfwSetInputMode(window, GLFW_TOUCH, GLFW_TRUE);
     glfwMakeContextCurrent(window);
 
     setRelativeScale();
