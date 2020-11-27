@@ -118,10 +118,9 @@ void LinuxGamepadJoystickManager::warnOnMissingGamePadMapping(gamepad::Gamepad* 
                 auto& joystick = (gamepad::Joystick&)gp->getJoystick();
                 auto m = std::make_shared<gamepad::GamepadMapping>();
                 m->parse(mapping);
-                gamepad::Gamepad* gp2 = new gamepad::Gamepad(gp->getIndex(), joystick, *m.get());
-                joystick.setGamepad(gp2);
-                delete gp;
-                gp = gp2;
+                auto index = gp->getIndex();
+                gp->~Gamepad();
+                new (gp) gamepad::Gamepad(index, joystick, *m.get());
                 unknownmappings.push_back(std::move(m));
             }
             return !gp->getMapping().mappings.empty();
