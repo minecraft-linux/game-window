@@ -12,6 +12,8 @@ private:
     int windowedWidth = -1, windowedHeight = -1;
     int relativeScale;
     bool focused = true;
+    bool warnedMouseButtons = false;
+    bool warnedButtons = false;
 
     friend class GLFWJoystickManager;
 

@@ -1,4 +1,5 @@
 #include "window_glfw.h"
+#include "game_window_manager.h"
 #include "joystick_manager_glfw.h"
 
 #include <codecvt>
@@ -138,7 +139,15 @@ void GLFWGameWindow::_glfwMouseButtonCallback(GLFWwindow* window, int button, in
     x *= user->getRelativeScale();
     y *= user->getRelativeScale();
 
-    user->onMouseButton(x, y, button + 1, action == GLFW_PRESS ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
+    if (button > GLFW_MOUSE_BUTTON_2) {
+        if (!user->warnedMouseButtons) {
+            user->warnedMouseButtons = true;
+            GameWindowManager::getManager()->getErrorHandler()->onError("GLFW Unknown Mousebutton", "Will be mapped as Key with KeyCode 20x");
+        }
+        user->onKeyboard((KeyCode) (200 + button), action == GLFW_PRESS ? KeyAction::PRESS : KeyAction::RELEASE);
+    } else {
+        user->onMouseButton(x, y, button + 1, action == GLFW_PRESS ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
+    }
 }
 
 void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y) {
@@ -250,7 +259,17 @@ void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode,
     }
     KeyAction enumAction = (action == GLFW_PRESS ? KeyAction::PRESS :
                             (action == GLFW_REPEAT ? KeyAction::REPEAT : KeyAction::RELEASE));
-    user->onKeyboard(getKeyMinecraft(key), enumAction);
+    auto minecraftKey = getKeyMinecraft(key);
+    if (key != GLFW_KEY_UNKNOWN && minecraftKey != KeyCode::UNKNOWN) {
+        user->onKeyboard(minecraftKey, enumAction);
+    } else {
+        if (!user->warnedButtons) {
+            user->warnedButtons = true;
+            GameWindowManager::getManager()->getErrorHandler()->onError("GLFW Unknown Key", "Please check your Keyboard Layout. Falling back to scancode for unknown Keys.");
+        }
+        user->onKeyboard((KeyCode) scancode, enumAction);
+    }
+    
 }
 
 void GLFWGameWindow::_glfwCharCallback(GLFWwindow* window, unsigned int ch) {
