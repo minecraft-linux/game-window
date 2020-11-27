@@ -2,7 +2,12 @@
 
 #include <fstream>
 #include <gamepad/joystick_manager_factory.h>
+#include <gamepad/joystick.h>
 #include "window_with_linux_gamepad.h"
+#include <sstream>
+#include <gamepad/gamepad_mapping.h>
+#include "joystick_manager.h"
+#include <game_window_manager.h>
 
 LinuxGamepadJoystickManager LinuxGamepadJoystickManager::instance;
 
@@ -48,11 +53,34 @@ void LinuxGamepadJoystickManager::loadMappingsFromFile(std::string const& path) 
     }
 }
 
+void LinuxGamepadJoystickManager::loadMappings(const std::string &content) {
+    for (size_t i = 0; i < content.length(); ) {
+        size_t j = content.find('\n', i);
+        std::string line = content.substr(i,  j);
+        gamepadManager.addMapping(line);
+        if (j == std::string::npos) {
+            // last line
+            break;
+        }
+        i = j + 1;
+    }
+}
+
 void LinuxGamepadJoystickManager::addWindow(WindowWithLinuxJoystick* window) {
     initialize();
     windows.insert(window);
-    for (gamepad::Gamepad* gp : gamepads)
-        window->onGamepadState(gp->getIndex(), true);
+    if (windows.size() == 1) {
+        // First window created poll all joysticks for valid mappings etc.
+        // Doing this earlier can cause unintenional errors if muliple mapping are added before the first window is created
+        for (gamepad::Gamepad* gp : gamepads) {
+            warnOnMissingGamePadMapping(gp);
+            window->onGamepadState(gp->getIndex(), true);
+        }
+    } else {
+        for (gamepad::Gamepad* gp : gamepads) {
+            window->onGamepadState(gp->getIndex(), true);
+        }
+    }
 }
 
 void LinuxGamepadJoystickManager::removeWindow(WindowWithLinuxJoystick* window) {
@@ -67,13 +95,41 @@ void LinuxGamepadJoystickManager::onWindowFocused(WindowWithLinuxJoystick* windo
 }
 
 void LinuxGamepadJoystickManager::onGamepadState(gamepad::Gamepad* gp, bool connected) {
-    if (connected)
+    if (connected) {
+        warnOnMissingGamePadMapping(gp);
         gamepads.insert(gp);
+    }
     else
         gamepads.erase(gp);
 
     for (auto window : windows)
         window->onGamepadState(gp->getIndex(), connected);
+}
+void LinuxGamepadJoystickManager::warnOnMissingGamePadMapping(gamepad::Gamepad* gp) {
+    if (gp->getMapping().mappings.empty()) {
+        if (windows.empty()) {
+            // No Warning before first window is created
+            return;
+        }
+        if (!JoystickManager::handleMissingGamePadMapping("Unknown", gp->getJoystick().getGUID(), 4, 12, 1, [&](std::string mapping) {
+            GameWindowManager::getManager()->addGamePadMapping(mapping);
+            if (gp->getMapping().mappings.empty()) {
+                // Update Gamepad, needed to add refresh mapping
+                auto& joystick = (gamepad::Joystick&)gp->getJoystick();
+                auto m = std::make_shared<gamepad::GamepadMapping>();
+                m->parse(mapping);
+                gamepad::Gamepad* gp2 = new gamepad::Gamepad(gp->getIndex(), joystick, *m.get());
+                joystick.setGamepad(gp2);
+                delete gp;
+                gp = gp2;
+                unknownmappings.push_back(std::move(m));
+            }
+            return !gp->getMapping().mappings.empty();
+        })) {
+            // Default empty mapping
+            return;
+        }
+    }
 }
 
 void LinuxGamepadJoystickManager::onGamepadButton(gamepad::Gamepad* gp, gamepad::GamepadButton btn, bool state) {

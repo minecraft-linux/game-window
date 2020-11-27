@@ -3,6 +3,8 @@
 #include <cstring>
 #include <fstream>
 #include "window_glfw.h"
+#include "joystick_manager.h"
+#include "game_window_manager.h"
 
 std::unordered_set<GLFWGameWindow*> GLFWJoystickManager::windows;
 GLFWGameWindow* GLFWJoystickManager::focusedWindow;
@@ -21,12 +23,12 @@ void GLFWJoystickManager::loadMappingsFromFile(std::string const& path) {
     std::string line;
     while (std::getline(fs, line)) {
         if (!line.empty())
-            glfwUpdateGamepadMappings(line.c_str());
+            loadMappings(line);
     }
-    for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++) {
-        if (glfwJoystickPresent(i) && glfwJoystickIsGamepad(i))
-            _glfwJoystickCallback(i, GLFW_CONNECTED);
-    }
+}
+
+void GLFWJoystickManager::loadMappings(const std::string &content) {
+    glfwUpdateGamepadMappings(content.c_str());
 }
 
 int GLFWJoystickManager::nextUnassignedUserId() {
@@ -62,8 +64,19 @@ void GLFWJoystickManager::update() {
 
 void GLFWJoystickManager::addWindow(GLFWGameWindow* window) {
     windows.insert(window);
-    for (auto& joystick : connectedJoysticks)
-        window->onGamepadState(joystick.second.userId, true);
+    if (windows.size() == 1) {
+        // First window created poll all joysticks for valid mappings etc.
+        // Doing this earlier can cause unintenional errors if muliple mapping are added before the first window is created
+        for (int i = GLFW_JOYSTICK_1; i <= GLFW_JOYSTICK_LAST; i++) {
+            if (glfwJoystickPresent(i)) {
+                _glfwJoystickCallback(i, GLFW_CONNECTED);
+            }
+        }
+    } else {
+        // Only newly added window gets the events
+        for (auto& joystick : connectedJoysticks)
+            window->onGamepadState(joystick.second.userId, true);
+    }
 }
 
 void GLFWJoystickManager::removeWindow(GLFWGameWindow* window) {
@@ -81,8 +94,29 @@ void GLFWJoystickManager::_glfwJoystickCallback(int joystick, int action) {
     auto js = connectedJoysticks.find(joystick);
     int userId;
     if (action == GLFW_CONNECTED) {
-        if (!glfwJoystickIsGamepad(joystick))
-            return;
+        if (!glfwJoystickIsGamepad(joystick)) {
+            if (windows.empty()) {
+                // No Warning before first window is created
+                return;
+            }
+            int axis, hats, buttons;
+            if (!glfwGetJoystickAxes(joystick, &axis)) {
+                axis = 0;
+            }
+            if (!glfwGetJoystickHats(joystick, &hats)) {
+                hats = 0;
+            }
+            if (!glfwGetJoystickButtons(joystick, &buttons)) {
+                buttons = 0;
+            }
+            if(!JoystickManager::handleMissingGamePadMapping(glfwGetJoystickName(joystick), glfwGetJoystickGUID(joystick), axis, buttons, hats, [&](std::string mapping) {
+                GameWindowManager::getManager()->addGamePadMapping(mapping);
+                return glfwJoystickIsGamepad(joystick);
+            })) {
+                // Default mapping failed
+                return;
+            }
+        }
 
         if (js != connectedJoysticks.end())
             return;

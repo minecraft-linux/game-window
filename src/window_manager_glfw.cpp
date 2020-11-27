@@ -4,6 +4,9 @@
 #include <stdexcept>
 
 GLFWWindowManager::GLFWWindowManager() {
+    // To create a default mapping for not mapped Gamepads
+    // to avoid subtracting heads from buttons again
+    glfwInitHint(GLFW_JOYSTICK_HAT_BUTTONS, 0);
     if (glfwInit() != GLFW_TRUE)
         throw std::runtime_error("glfwInit error");
     GLFWJoystickManager::init();
@@ -22,6 +25,9 @@ void GLFWWindowManager::addGamepadMappingFile(const std::string &path) {
     GLFWJoystickManager::loadMappingsFromFile(path);
 }
 
+void GLFWWindowManager::addGamePadMapping(const std::string &content) {
+    GLFWJoystickManager::loadMappings(content);
+}
 
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {

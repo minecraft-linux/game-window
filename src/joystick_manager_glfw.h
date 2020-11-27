@@ -32,6 +32,7 @@ private:
 public:
     static void init();
     static void loadMappingsFromFile(std::string const& path);
+    static void loadMappings(std::string const& content);
 
     static void update();
     static void update(GLFWGameWindow* window);

@@ -20,11 +20,13 @@ private:
     std::unordered_set<gamepad::Gamepad*> gamepads;
     std::shared_ptr<gamepad::JoystickManager> joystickManager;
     gamepad::GamepadManager gamepadManager;
+    std::vector<std::shared_ptr<gamepad::GamepadMapping>> unknownmappings;
 
     static GamepadButtonId mapButtonId(gamepad::GamepadButton id);
     static GamepadAxisId mapAxisId(gamepad::GamepadAxis id);
 
     void onGamepadState(gamepad::Gamepad* gp, bool connected);
+    void warnOnMissingGamePadMapping(gamepad::Gamepad* gp);
     void onGamepadButton(gamepad::Gamepad* gp, gamepad::GamepadButton btn, bool state);
     void onGamepadAxis(gamepad::Gamepad* gp, gamepad::GamepadAxis axis, float value);
 
@@ -36,6 +38,7 @@ public:
     void initialize();
 
     void loadMappingsFromFile(std::string const& path);
+    void loadMappings(std::string const& content);
 
     void update(WindowWithLinuxJoystick* window);
 

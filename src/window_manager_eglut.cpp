@@ -32,6 +32,9 @@ void EGLUTWindowManager::addGamepadMappingFile(const std::string &path) {
     LinuxGamepadJoystickManager::instance.loadMappingsFromFile(path);
 }
 
+void EGLUTWindowManager::addGamePadMapping(const std::string &content) {
+    LinuxGamepadJoystickManager::instance.loadMappings(content);
+}
 
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {

@@ -13,4 +13,5 @@ public:
 
     void addGamepadMappingFile(const std::string& path) override;
 
+    void addGamePadMapping(const std::string &content) override;
 };
