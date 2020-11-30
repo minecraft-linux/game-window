@@ -1,5 +1,6 @@
 #include "window_eglut.h"
 #include "joystick_manager_linux_gamepad.h"
+#include <game_window_manager.h>
 
 #include <cstring>
 #include <sstream>
@@ -246,7 +247,11 @@ void EGLUTWindow::_eglutKeyboardSpecialFunc(int key, int action) {
     KeyCode mKey = getKeyMinecraft(key);
     KeyAction enumAction = (action == EGLUT_KEY_PRESS ? KeyAction::PRESS :
                             (action == EGLUT_KEY_REPEAT ? KeyAction::REPEAT : KeyAction::RELEASE));
-    currentWindow->onKeyboard(mKey, enumAction);
+    if (mKey != KeyCode::UNKNOWN) {
+        currentWindow->onKeyboard(mKey, enumAction);
+    } else {
+        GameWindowManager::getManager()->getErrorHandler()->onError("EGLUT Unknown Key", "Please check your Keyboard Layout. No Fallback Implemented");
+    }
 }
 
 void EGLUTWindow::_eglutPasteFunc(const char* str, int len) {
