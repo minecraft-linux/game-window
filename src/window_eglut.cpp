@@ -121,6 +121,10 @@ void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
         currentWindow->onMouseScroll(x, y, 0.0, (btn == 5 ? -1.0 : 1.0));
         return;
     }
+    if (btn == 6 || btn == 7) {
+        currentWindow->onMouseScroll(x, y, (btn == 7 ? -1.0 : 1.0), 0.0);
+        return;
+    }
     btn = (btn == 2 ? 3 : (btn == 3 ? 2 : btn));
     currentWindow->onMouseButton(x, y, btn, action == EGLUT_MOUSE_PRESS ? MouseButtonAction::PRESS :
                                             MouseButtonAction::RELEASE);

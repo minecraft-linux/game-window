@@ -139,15 +139,7 @@ void GLFWGameWindow::_glfwMouseButtonCallback(GLFWwindow* window, int button, in
     x *= user->getRelativeScale();
     y *= user->getRelativeScale();
 
-    if (button > GLFW_MOUSE_BUTTON_2) {
-        if (!user->warnedMouseButtons) {
-            user->warnedMouseButtons = true;
-            GameWindowManager::getManager()->getErrorHandler()->onError("GLFW Unknown Mousebutton", "Will be mapped as Key with KeyCode 20x");
-        }
-        user->onKeyboard((KeyCode) (200 + button), action == GLFW_PRESS ? KeyAction::PRESS : KeyAction::RELEASE);
-    } else {
-        user->onMouseButton(x, y, button + 1, action == GLFW_PRESS ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
-    }
+    user->onMouseButton(x, y, button + (button > GLFW_MOUSE_BUTTON_3 ? 5 : 1), action == GLFW_PRESS ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
 }
 
 void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y) {
