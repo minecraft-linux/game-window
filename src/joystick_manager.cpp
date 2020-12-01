@@ -12,15 +12,15 @@ bool JoystickManager::handleMissingGamePadMapping(std::string name, std::string 
         const char* axes[] = { "leftx", "lefty", "rightx", "righty", "lefttrigger", "righttrigger" };
         if (axescount) {
             std::ostringstream submap;
-            for (size_t i = 0; i < axescount; i++) {
+            for (size_t i = 0; i < axescount && i < sizeof(axes) / sizeof(axes[0]); i++) {
                 submap << "," << axes[i] << ":a" << i;
             }
             mapping << submap.str();
         }
-        const char* hats[] = { "dpup", "dpright", "dpdown", "dpleft", "leftx", "lefty", "rightx", "righty", "lefttrigger", "righttrigger" };
+        const char* hats[] = { "dpup", "dpright", "dpdown", "dpleft" };
         if (hatscount) {
             std::ostringstream submap;
-            for (size_t i = 0; i < hatscount; i++) {
+            for (size_t i = 0; i < hatscount && i < sizeof(hats) / sizeof(hats[0]) / 4; i++) {
                 for (size_t j = 0; j < 4; j++) {
                     submap << "," << hats[i*4 + j] << ":h" << i << "." << (1 << j);
                 }
@@ -29,7 +29,7 @@ bool JoystickManager::handleMissingGamePadMapping(std::string name, std::string 
         }
         if (buttonscount) {
             std::ostringstream submap;
-            for (size_t i = 0; i < buttonscount; i++) {
+            for (size_t i = 0; i < buttonscount && i < sizeof(btns) / sizeof(btns[0]); i++) {
                 submap << "," << btns[i] << ":b" << i;
             }
             mapping << submap.str();
