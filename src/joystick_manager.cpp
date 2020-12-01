@@ -44,7 +44,7 @@ bool JoystickManager::handleMissingGamePadMapping(std::string name, std::string 
             errormsg << " This Launcher has created an dummy Gamepad Mapping for you, you will have to create your own for best experience: '" << mapstr << "'";
         }
 
-        GameWindowManager::getManager()->getErrorHandler()->onError("GLFWJoystickManager", errormsg.str());
+        GameWindowManager::getManager()->getErrorHandler()->onError("JoystickManager", errormsg.str());
 
         return _hasmapping;
 }
