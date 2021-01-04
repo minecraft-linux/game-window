@@ -3,6 +3,7 @@
 #include <sstream>
 
 bool JoystickManager::handleMissingGamePadMapping(std::string name, std::string guid, int axescount, int buttonscount, int hatscount, std::function<bool(std::string mapping)> updateMapping) {
+#ifdef ENABLE_FEATURE_VERBOSE_JOYSTICKS
         std::stringstream errormsg;
         errormsg << "Missing Gamepad Mapping for controller '" << name << "'(" << guid << "). Please create a Gamepad Mapping for your gamepad.";
         std::ostringstream mapping;
@@ -47,4 +48,7 @@ bool JoystickManager::handleMissingGamePadMapping(std::string name, std::string 
         GameWindowManager::getManager()->getErrorHandler()->onError("JoystickManager", errormsg.str());
 
         return _hasmapping;
+#else
+        return false;
+#endif
 }
