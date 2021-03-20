@@ -254,14 +254,16 @@ void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode,
     auto minecraftKey = getKeyMinecraft(key);
     if (key != GLFW_KEY_UNKNOWN && minecraftKey != KeyCode::UNKNOWN) {
         user->onKeyboard(minecraftKey, enumAction);
-    } else {
+    }
+#ifndef NDEBUG
+    else {
         if (!user->warnedButtons) {
             user->warnedButtons = true;
             GameWindowManager::getManager()->getErrorHandler()->onError("GLFW Unknown Key", "Please check your Keyboard Layout. Falling back to scancode for unknown Keys.");
         }
         user->onKeyboard((KeyCode) scancode, enumAction);
     }
-    
+#endif
 }
 
 void GLFWGameWindow::_glfwCharCallback(GLFWwindow* window, unsigned int ch) {
