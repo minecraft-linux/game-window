@@ -1,16 +1,18 @@
 #pragma once
 
 #include <game_window.h>
+#define EGL_NO_X11
 #include <EGL/egl.h>
+#include <GLES2/gl2.h>
 #include <SDL2/SDL.h>
 
 
 struct bgra_pixel {
     // channels in framebuffer order
-    char b;
-    char g;
-    char r;
-    char a;
+    unsigned char b;
+    unsigned char g;
+    unsigned char r;
+    unsigned char a;
 };
 
 class SDL2GameWindow : public GameWindow {
@@ -63,6 +65,10 @@ private:
     void handleMouseClickEvent(SDL_MouseButtonEvent *clickevent);
     void handleKeyboardEvent(SDL_KeyboardEvent *event);
     KeyCode getKeyMinecraft(int keyCode);
+
+    void (*glClearColor)(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+    void (*glClear)(GLbitfield mask);
+    void (*glFinish)();
 
 public:
 

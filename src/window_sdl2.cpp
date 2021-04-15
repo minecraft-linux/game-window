@@ -22,6 +22,10 @@ SDL2GameWindow::SDL2GameWindow(const std::string& title, int width, int height, 
     initEGL();
     initSDL();
     initCursor();
+    auto proc = GameWindowManager::getManager()->getProcAddrFunc();
+    glClear = (decltype(glClear))proc("glClear");
+    glClearColor = (decltype(glClearColor))proc("glClearColor");
+    glFinish = (decltype(glFinish))proc("glFinish");
 }
 
 SDL2GameWindow::~SDL2GameWindow() {
@@ -145,7 +149,7 @@ void SDL2GameWindow::initSDL() {
 void SDL2GameWindow::initCursor() {
     const char mcw = 16; // raw mouse cursor image width
     // rgba mouse cursor image data
-    const char mci[16][16][4] = {
+    const unsigned char mci[16][16][4] = {
     {{6,61,51,255}, {6,61,51,255}, {6,61,51,255}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}},
     {{2,32,26,255}, {165,253,240,255}, {165,253,240,255}, {6,61,51,255}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}},
     {{2,32,26,255}, {165,253,240,255}, {38,200,174,255}, {165,253,240,255}, {6,61,51,255}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}, {0,0,0,0}},
