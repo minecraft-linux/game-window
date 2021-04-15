@@ -1,7 +1,5 @@
 #include "window_manager_sdl2.h"
 #include "window_sdl2.h"
-#include <EGL/egl.h>
-#include <dlfcn.h>
 
 GameWindowManager::ProcAddrFunc dlsymGetProcAddress(const char* sym) {
     if (!sym)
@@ -9,20 +7,7 @@ GameWindowManager::ProcAddrFunc dlsymGetProcAddress(const char* sym) {
     void *eglFunc;
 
     // try official EGL method first
-    eglFunc = (void*)eglGetProcAddress(sym);
-    if (eglFunc)
-        return (GameWindowManager::ProcAddrFunc)eglFunc;
-
-    // manual fallback "If the EGL version is not 1.5 or greater, only queries of EGL and client API extension functions will succeed."
-    void *libEGL;
-    libEGL = dlopen("libEGL.so", RTLD_LAZY | RTLD_GLOBAL);
-    if (!libEGL) {
-        printf("Error: Unable to open libEGL.so for symbol processing");
-        return NULL;
-    }
-
-    eglFunc = dlsym(libEGL, sym);
-    dlclose(libEGL);
+    eglFunc = (void*)SDL_GL_GetProcAddress(sym);
 
     return (GameWindowManager::ProcAddrFunc)eglFunc;
 }
