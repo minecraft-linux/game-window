@@ -7,6 +7,7 @@
 #include <eglut.h>
 #define XK_MISCELLANY
 #define XK_LATIN1
+#define XK_XKB_KEYS
 #include <X11/keysymdef.h>
 
 EGLUTWindow* EGLUTWindow::currentWindow;
@@ -192,11 +193,34 @@ KeyCode EGLUTWindow::getKeyMinecraft(int keyCode) {
         return (KeyCode) (keyCode - XK_a + (int) KeyCode::A);
     if (keyCode >= XK_F1 && keyCode <= XK_F12)
         return (KeyCode) (keyCode - XK_F1 + (int) KeyCode::FN1);
+    // if (keyCode >= XK_exclam && keyCode <= XK_parenleft)
+    //     return (KeyCode) (keyCode - XK_exclam + (int) KeyCode::NUM_1);
     if (keyCode >= XK_KP_0 && keyCode <= XK_KP_9)
-        return (KeyCode) (keyCode - XK_KP_0 + 96);
+        return (KeyCode) (keyCode - XK_KP_0 + (int) KeyCode::NUMPAD_0);
+    if (keyCode >= XK_KP_Multiply && keyCode <= XK_KP_Divide)
+        return (KeyCode) (keyCode - XK_KP_Multiply + (int) KeyCode::NUMPAD_MULTIPLY);
+    if (keyCode >= XK_KP_Home && keyCode <= XK_KP_Down)
+        return (KeyCode) (keyCode - XK_KP_Home + (int) KeyCode::HOME);
+    if (keyCode >= XK_KP_Prior && keyCode <= XK_KP_End)
+        return (KeyCode) (keyCode - XK_KP_Prior + (int) KeyCode::PAGE_UP);
 
     switch (keyCode) {
+        case XK_exclam: return KeyCode::NUM_1;
+        case XK_at: return KeyCode::NUM_2;
+        case XK_numbersign: return KeyCode::NUM_3;
+        case XK_dollar: return KeyCode::NUM_4;
+        case XK_percent: return KeyCode::NUM_5;
+        case XK_asciicircum: return KeyCode::NUM_6;
+        case XK_ampersand: return KeyCode::NUM_7;
+        case XK_asterisk: return KeyCode::NUM_8;
+        case XK_parenleft: return KeyCode::NUM_9;
+        case XK_parenright: return KeyCode::NUM_0;
+        case XK_underscore: return KeyCode::MINUS;
+        case XK_plus: return KeyCode::EQUAL;
+        
+        // case XK_parenright: return KeyCode::RIGHT_BRACKET;
         case XK_BackSpace: return KeyCode::BACKSPACE;
+        case XK_ISO_Left_Tab:
         case XK_Tab: return KeyCode::TAB;
         case XK_Return: return KeyCode::ENTER;
         case XK_Shift_L: return KeyCode::LEFT_SHIFT;
@@ -229,6 +253,9 @@ KeyCode EGLUTWindow::getKeyMinecraft(int keyCode) {
         case XK_backslash: return KeyCode::BACKSLASH;
         case XK_bracketright: return KeyCode::RIGHT_BRACKET;
         case XK_apostrophe: return KeyCode::APOSTROPHE;
+        case XK_Alt_L: return KeyCode::LEFT_ALT;
+        case XK_Alt_R: return KeyCode::RIGHT_ALT;
+        case XK_KP_Enter: return KeyCode::ENTER;
     }
 
     if (keyCode < 256)

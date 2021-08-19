@@ -157,6 +157,8 @@ void GLFWGameWindow::_glfwScrollCallback(GLFWwindow* window, double x, double y)
 KeyCode GLFWGameWindow::getKeyMinecraft(int keyCode) {
     if (keyCode >= GLFW_KEY_F1 && keyCode <= GLFW_KEY_F12)
         return (KeyCode) (keyCode - GLFW_KEY_F1 + (int) KeyCode::FN1);
+    if (keyCode >= GLFW_KEY_KP_0 && keyCode <= GLFW_KEY_KP_9)
+        return (KeyCode) (keyCode - GLFW_KEY_KP_0 + (int) KeyCode::NUMPAD_0);
     switch (keyCode) {
         case GLFW_KEY_BACKSPACE:
             return KeyCode::BACKSPACE;
@@ -233,6 +235,19 @@ KeyCode GLFWGameWindow::getKeyMinecraft(int keyCode) {
             return KeyCode::LEFT_ALT;
         case GLFW_KEY_RIGHT_ALT:
             return KeyCode::RIGHT_ALT;
+
+        case GLFW_KEY_KP_ENTER:
+            return KeyCode::ENTER;
+        case GLFW_KEY_KP_SUBTRACT:
+            return KeyCode::NUMPAD_SUBTRACT;
+        case GLFW_KEY_KP_MULTIPLY:
+            return KeyCode::NUMPAD_MULTIPLY;
+        case GLFW_KEY_KP_ADD:
+            return KeyCode::NUMPAD_ADD;
+        case GLFW_KEY_KP_DIVIDE:
+            return KeyCode::NUMPAD_DIVIDE;
+        case GLFW_KEY_KP_DECIMAL:
+            return KeyCode::NUMPAD_DECIMAL;
     }
     if (keyCode < 256)
         return (KeyCode) keyCode;

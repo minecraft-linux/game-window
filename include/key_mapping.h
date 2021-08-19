@@ -25,6 +25,8 @@ enum class KeyCode {
     INSERT = 45,
     DELETE = 46,
     NUM_0 = 48, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9 = 57,
+    NUMPAD_0 = 0x60, NUMPAD_1, NUMPAD_2, NUMPAD_3, NUMPAD_4, NUMPAD_5, NUMPAD_6, NUMPAD_7, NUMPAD_8, NUMPAD_9 = 0x69,
+    NUMPAD_MULTIPLY = 0x6a, NUMPAD_ADD, NUMPAD_SEPERATOR, NUMPAD_SUBTRACT, NUMPAD_DECIMAL, NUMPAD_DIVIDE = 0x6F,
     A = 65, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z = 90,
     FN1 = 112, FN2, FN3, FN4, FN5, FN6, FN7, FN8, FN9, FN10, FN11, FN12,
     NUM_LOCK = 144,
@@ -45,6 +47,6 @@ enum class KeyCode {
     // Keys not defined in Minecraft but we use them anyways
     LEFT_SUPER = 1,
     RIGHT_SUPER = 1|256,
-    LEFT_ALT = 2,
-    RIGHT_ALT = 2|256
+    LEFT_ALT = 0x12,
+    RIGHT_ALT = 0x12|256
 };
