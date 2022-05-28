@@ -65,6 +65,8 @@ public:
 
     virtual ~GameWindow() {}
 
+    virtual void makeCurrent(bool) = 0;
+
     virtual void setIcon(std::string const& iconPath) = 0;
 
     virtual void show() = 0;

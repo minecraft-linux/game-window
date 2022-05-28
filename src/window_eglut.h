@@ -44,6 +44,8 @@ public:
 
     void setIcon(std::string const& iconPath) override;
 
+    void makeCurrent(bool active) override;
+
     void show() override;
 
     void close() override;

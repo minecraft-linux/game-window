@@ -49,6 +49,10 @@ void EGLUTWindow::setIcon(std::string const &iconPath) {
     eglutSetWindowIcon(iconPath.c_str());
 }
 
+void EGLUTWindow::makeCurrent(bool active) {
+    eglutMakeCurrent(active ? winId : -1);
+}
+
 void EGLUTWindow::show() {
     eglutShowWindow();
     currentWindow = this;

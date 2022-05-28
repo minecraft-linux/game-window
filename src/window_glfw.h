@@ -37,6 +37,8 @@ public:
 
     void setIcon(std::string const& iconPath) override;
 
+    void makeCurrent(bool active) override;
+
     int getRelativeScale() const;
 
     void setRelativeScale();

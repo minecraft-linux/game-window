@@ -38,6 +38,10 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     setRelativeScale();
 }
 
+void GLFWGameWindow::makeCurrent(bool c) {
+    glfwMakeContextCurrent(c ? window : nullptr);
+}
+
 GLFWGameWindow::~GLFWGameWindow() {
     GLFWJoystickManager::removeWindow(this);
     glfwDestroyWindow(window);
