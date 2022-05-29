@@ -23,6 +23,12 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if(window == nullptr) {
+        // Throw an exception, otherwise it would crash due to a nullptr without any information
+        const char* error = nullptr;
+        glfwGetError(&error);
+        throw std::runtime_error(error == nullptr ? "GLFW failed to create a window without any error message" : error);
+    }
     glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, _glfwWindowSizeCallback);
     glfwSetCursorPosCallback(window, _glfwCursorPosCallback);
