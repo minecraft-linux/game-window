@@ -2,6 +2,8 @@
 
 #include "window_with_linux_gamepad.h"
 
+#include <mutex>
+
 class EGLUTWindow : public WindowWithLinuxJoystick {
 
 private:
@@ -16,6 +18,8 @@ private:
     int lastMouseX = -1, lastMouseY = -1;
     bool modCTRL = false;
     int pointerIds[16];
+
+    std::recursive_mutex x11_sync;
 
     static KeyCode getKeyMinecraft(int keyCode);
 

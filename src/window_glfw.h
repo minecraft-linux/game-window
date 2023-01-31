@@ -2,6 +2,7 @@
 
 #include <game_window.h>
 #include <GLFW/glfw3.h>
+#include <mutex>
 
 class GLFWGameWindow : public GameWindow {
 
@@ -16,6 +17,8 @@ private:
     bool warnedButtons = false;
 
     friend class GLFWJoystickManager;
+
+    std::recursive_mutex x11_sync;
 
     static KeyCode getKeyMinecraft(int keyCode);
 
