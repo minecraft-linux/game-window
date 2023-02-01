@@ -10,16 +10,10 @@ jobs:
             "project": "mcpelauncher",
             "path": "game-window",
             "ref": ${{ tojson(github.sha) }}
-          }
-        ]
- macOS:
-    uses: ChristopherHX/osx-packaging-scripts/.github/workflows/main.yml@main
-    with:
-      submodule-refs: |-
-        [
+          },
           {
             "project": "mcpelauncher",
-            "path": "game-window",
-            "ref": ${{ tojson(github.sha) }}
+            "path": "mcpelauncher-client",
+            "ref": "new-input-queue"
           }
         ]
