@@ -15,7 +15,9 @@ EGLUTWindow* EGLUTWindow::currentWindow;
 EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, GraphicsApi api) :
         WindowWithLinuxJoystick(title, width, height, api), title(title), width(width), height(height),
         graphicsApi(api) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutInitWindowSize(width, height);
     if (graphicsApi == GraphicsApi::OPENGL_ES2)
         eglutInitAPIMask(EGLUT_OPENGL_ES2_BIT);
@@ -40,7 +42,9 @@ EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, Graphi
 }
 
 EGLUTWindow::~EGLUTWindow() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     if (currentWindow == this)
         currentWindow = nullptr;
     if (winId != -1)
@@ -48,53 +52,71 @@ EGLUTWindow::~EGLUTWindow() {
 }
 
 void EGLUTWindow::setIcon(std::string const &iconPath) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutSetWindowIcon(iconPath.c_str());
 }
 
 void EGLUTWindow::makeCurrent(bool active) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutMakeCurrent(active ? winId : -1);
 }
 
 void EGLUTWindow::show() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutShowWindow();
     currentWindow = this;
     addWindowToGamepadManager();
 }
 
 void EGLUTWindow::close() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutDestroyWindow(currentWindow->winId);
     eglutFini();
     currentWindow->winId = -1;
 }
 
 void EGLUTWindow::pollEvents() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutPollEvents();
 }
 
 void EGLUTWindow::setCursorDisabled(bool disabled) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     cursorDisabled = disabled;
     eglutSetMousePointerLocked(disabled ? EGLUT_POINTER_LOCKED : EGLUT_POINTER_UNLOCKED);
 }
 
 void EGLUTWindow::setFullscreen(bool fullscreen) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     if (eglutGet(EGLUT_FULLSCREEN_MODE) != (fullscreen ? EGLUT_FULLSCREEN : EGLUT_WINDOWED))
         eglutToggleFullscreen();
 }
 
 void EGLUTWindow::swapBuffers() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutSwapBuffers();
 }
 
 void EGLUTWindow::setSwapInterval(int interval) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutSwapInterval(interval);
 }
 
@@ -323,6 +345,8 @@ void EGLUTWindow::getWindowSize(int& width, int& height) const {
 }
 
 void EGLUTWindow::setClipboardText(std::string const &text) {    
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     eglutSetClipboardText(text.c_str());
 }

@@ -10,7 +10,9 @@
 
 GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
         GameWindow(title, width, height, api), windowedWidth(width), windowedHeight(height) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwDefaultWindowHints();
     if (api == GraphicsApi::OPENGL_ES2) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
@@ -50,12 +52,16 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
 }
 
 void GLFWGameWindow::makeCurrent(bool c) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwMakeContextCurrent(c ? window : nullptr);
 }
 
 GLFWGameWindow::~GLFWGameWindow() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     GLFWJoystickManager::removeWindow(this);
     glfwDestroyWindow(window);
 }
@@ -65,7 +71,9 @@ void GLFWGameWindow::setIcon(std::string const& iconPath) {
 }
 
 void GLFWGameWindow::setRelativeScale() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     int fx, fy;
     glfwGetFramebufferSize(window, &fx, &fy);
 
@@ -80,23 +88,31 @@ int GLFWGameWindow::getRelativeScale() const {
 }
 
 void GLFWGameWindow::getWindowSize(int& width, int& height) const {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwGetFramebufferSize(window, &width, &height);
 }
 
 void GLFWGameWindow::show() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     GLFWJoystickManager::addWindow(this);
     glfwShowWindow(window);
 }
 
 void GLFWGameWindow::close() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void GLFWGameWindow::pollEvents() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     resized = false;
     glfwPollEvents();
     if(resized)
@@ -105,13 +121,17 @@ void GLFWGameWindow::pollEvents() {
 }
 
 void GLFWGameWindow::setCursorDisabled(bool disabled) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 }
 
 void GLFWGameWindow::setFullscreen(bool fullscreen) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     if (fullscreen) {
         glfwGetWindowPos(window, &windowedX, &windowedY);
         glfwGetFramebufferSize(window, &windowedWidth, &windowedHeight);
@@ -124,17 +144,23 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
 }
 
 void GLFWGameWindow::setClipboardText(std::string const &text) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwSetClipboardString(window, text.c_str());
 }
 
 void GLFWGameWindow::swapBuffers() {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwSwapBuffers(window);
 }
 
 void GLFWGameWindow::setSwapInterval(int interval) {
-    const std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#ifdef GAMEWINDOW_X11_LOCK
+    std::lock_guard<std::recursive_mutex> lock(x11_sync);
+#endif
     glfwSwapInterval(interval);
 }
 
