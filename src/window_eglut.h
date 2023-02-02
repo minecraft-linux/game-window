@@ -1,6 +1,11 @@
 #pragma once
+#if !defined(GAMEWINDOW_NO_X11_LOCK) && !defined(GAMEWINDOW_X11_LOCK) && !defined(__APPLE__)
+#define GAMEWINDOW_X11_LOCK
+#endif
 
 #include "window_with_linux_gamepad.h"
+
+#include <mutex>
 
 class EGLUTWindow : public WindowWithLinuxJoystick {
 
@@ -16,6 +21,10 @@ private:
     int lastMouseX = -1, lastMouseY = -1;
     bool modCTRL = false;
     int pointerIds[16];
+
+#ifdef GAMEWINDOW_X11_LOCK
+    std::recursive_mutex x11_sync;
+#endif
 
     static KeyCode getKeyMinecraft(int keyCode);
 

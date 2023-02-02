@@ -1,7 +1,11 @@
 #pragma once
+#if !defined(GAMEWINDOW_NO_X11_LOCK) && !defined(GAMEWINDOW_X11_LOCK) && !defined(__APPLE__)
+#define GAMEWINDOW_X11_LOCK
+#endif
 
 #include <game_window.h>
 #include <GLFW/glfw3.h>
+#include <mutex>
 
 class GLFWGameWindow : public GameWindow {
 
@@ -16,6 +20,10 @@ private:
     bool warnedButtons = false;
 
     friend class GLFWJoystickManager;
+
+#ifdef GAMEWINDOW_X11_LOCK
+    std::recursive_mutex x11_sync;
+#endif
 
     static KeyCode getKeyMinecraft(int keyCode);
 
