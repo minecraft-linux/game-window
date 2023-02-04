@@ -17,11 +17,13 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     if (api == GraphicsApi::OPENGL_ES2) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-        #ifdef __APPLE__
+#ifdef __APPLE__
+        // minecraft-linux/angle (Metal backend) doesn't create an es3 window if we request es2.
+        // The OpenGL backend of angle uses es3 without this change.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        #else
+#else
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-        #endif
+#endif
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     } else if (api == GraphicsApi::OPENGL) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -88,10 +90,8 @@ int GLFWGameWindow::getRelativeScale() const {
 }
 
 void GLFWGameWindow::getWindowSize(int& width, int& height) const {
-#ifdef GAMEWINDOW_X11_LOCK
-    std::lock_guard<std::recursive_mutex> lock(x11_sync);
-#endif
-    glfwGetFramebufferSize(window, &width, &height);
+    width = windowedWidth;
+    height = windowedHeight;
 }
 
 void GLFWGameWindow::show() {
