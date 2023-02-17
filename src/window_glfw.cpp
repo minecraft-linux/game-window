@@ -17,13 +17,7 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
     if (api == GraphicsApi::OPENGL_ES2) {
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
-#ifdef __APPLE__
-        // minecraft-linux/angle (Metal backend) doesn't create an es3 window if we request es2.
-        // The OpenGL backend of angle uses es3 without this change.
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-#else
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-#endif
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
     } else if (api == GraphicsApi::OPENGL) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -32,6 +26,15 @@ GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     }
     window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if (window == nullptr && api == GraphicsApi::OPENGL_ES2) {
+        // Failed to get es3 request es2
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_EGL_CONTEXT_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+        window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    }
     if(window == nullptr) {
         // Throw an exception, otherwise it would crash due to a nullptr without any information
         const char* error = nullptr;
