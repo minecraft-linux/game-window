@@ -51,7 +51,14 @@ void GLFWJoystickManager::update(GLFWGameWindow* window) {
             }
         }
         for (int i = 0; i <= GLFW_GAMEPAD_AXIS_LAST; i++) {
-            window->onGamepadAxis(j.second.userId, mapAxisId(i), state.axes[i]);
+            float value = state.axes[i];
+            switch(i) {
+            case GLFW_GAMEPAD_AXIS_LEFT_TRIGGER:
+            case GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER:
+                value = value / 2.0f + 0.5f;
+            break;
+            }
+            window->onGamepadAxis(j.second.userId, mapAxisId(i), value);
         }
 
         memcpy(j.second.oldButtonStates, state.buttons, GLFW_GAMEPAD_BUTTON_LAST + 1);
