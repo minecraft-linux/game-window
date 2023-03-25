@@ -128,7 +128,11 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
-    glfwSetCursorPos(window, windowedWidth / 2, windowedHeight / 2);
+        float xscale = 1, yscale = 1;
+#ifdef __APPLE__
+        glfwGetWindowContentScale(window, &xscale, &yscale);
+#endif
+        glfwSetCursorPos(window, (windowedWidth / 2) / xscale, (windowedHeight / 2) / yscale);
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
@@ -147,7 +151,11 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
-        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth, oldWindowedHeight, GLFW_DONT_CARE);
+        float xscale = 1, yscale = 1;
+#ifdef __APPLE__
+        glfwGetWindowContentScale(window, &xscale, &yscale);
+#endif
+        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / xscale, oldWindowedHeight / yscale, GLFW_DONT_CARE);
     }
 }
 
