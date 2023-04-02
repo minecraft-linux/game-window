@@ -127,6 +127,11 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
+    if (disabled) {
+        float xscale = 1, yscale = 1;
+        glfwGetWindowContentScale(window, &xscale, &yscale);
+        glfwSetCursorPos(window, (windowedWidth / 2) / xscale, (windowedHeight / 2) / yscale);
+    }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 }
@@ -138,11 +143,15 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
     if (fullscreen) {
         glfwGetWindowPos(window, &windowedX, &windowedY);
         glfwGetFramebufferSize(window, &windowedWidth, &windowedHeight);
+        oldWindowedWidth = windowedWidth;
+        oldWindowedHeight = windowedHeight;
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
-        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, GLFW_DONT_CARE);
+        float xscale = 1, yscale = 1;
+        glfwGetWindowContentScale(window, &xscale, &yscale);
+        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / xscale, oldWindowedHeight / yscale, GLFW_DONT_CARE);
     }
 }
 
