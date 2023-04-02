@@ -129,7 +129,9 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
 #endif
     if (disabled) {
         float xscale = 1, yscale = 1;
+#ifdef __APPLE__
         glfwGetWindowContentScale(window, &xscale, &yscale);
+#endif
         glfwSetCursorPos(window, (windowedWidth / 2) / xscale, (windowedHeight / 2) / yscale);
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
@@ -150,7 +152,9 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
         float xscale = 1, yscale = 1;
+#ifdef __APPLE__
         glfwGetWindowContentScale(window, &xscale, &yscale);
+#endif
         glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / xscale, oldWindowedHeight / yscale, GLFW_DONT_CARE);
     }
 }
