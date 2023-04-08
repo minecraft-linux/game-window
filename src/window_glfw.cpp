@@ -86,6 +86,9 @@ void GLFWGameWindow::setRelativeScale() {
     glfwGetWindowSize(window, &wx, &wy);
 
     relativeScale = (int) floor(((fx / wx) + (fy / wy)) / 2);
+    // Update window size to match content size mismatch
+    windowedWidth = fx;
+    windowedHeight = fy;
 }
 
 int GLFWGameWindow::getRelativeScale() const {
@@ -128,11 +131,7 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
-        float xscale = 1, yscale = 1;
-#ifdef __APPLE__
-        glfwGetWindowContentScale(window, &xscale, &yscale);
-#endif
-        glfwSetCursorPos(window, (windowedWidth / 2) / xscale, (windowedHeight / 2) / yscale);
+        glfwSetCursorPos(window, (windowedWidth / 2) / getRelativeScale(), (windowedHeight / 2) / getRelativeScale());
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
@@ -144,18 +143,13 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
 #endif
     if (fullscreen) {
         glfwGetWindowPos(window, &windowedX, &windowedY);
-        glfwGetFramebufferSize(window, &windowedWidth, &windowedHeight);
         oldWindowedWidth = windowedWidth;
         oldWindowedHeight = windowedHeight;
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
-        float xscale = 1, yscale = 1;
-#ifdef __APPLE__
-        glfwGetWindowContentScale(window, &xscale, &yscale);
-#endif
-        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / xscale, oldWindowedHeight / yscale, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / getRelativeScale(), oldWindowedHeight / getRelativeScale(), GLFW_DONT_CARE);
     }
 }
 
