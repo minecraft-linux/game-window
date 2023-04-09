@@ -151,6 +151,7 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
     } else {
         glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / getRelativeScale(), oldWindowedHeight / getRelativeScale(), GLFW_DONT_CARE);
     }
+    onWindowSizeChanged(windowedWidth, windowedHeight);
 }
 
 void GLFWGameWindow::setClipboardText(std::string const &text) {
