@@ -13,7 +13,10 @@ private:
     GLFWwindow* window;
     double lastMouseX = 0.0, lastMouseY = 0.0;
     int windowedX = -1, windowedY = -1;
-    int windowedWidth = -1, windowedHeight = -1, oldWindowedWidth = -1, oldWindowedHeight = -1;
+    // width and height in content pixels
+    int width = -1, height = -1
+    // width and height in window coordinates = pixels / relativeScale
+    int windowedWidth = -1, windowedHeight = -1;
     int relativeScale;
     bool resized = false;
     bool focused = true;

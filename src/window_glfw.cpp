@@ -9,7 +9,7 @@
 #include <math.h>
 
 GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
-        GameWindow(title, width, height, api), windowedWidth(width), windowedHeight(height) {
+        GameWindow(title, width, height, api), width(width), height(height) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
@@ -87,8 +87,8 @@ void GLFWGameWindow::setRelativeScale() {
 
     relativeScale = (int) floor(((fx / wx) + (fy / wy)) / 2);
     // Update window size to match content size mismatch
-    windowedWidth = fx;
-    windowedHeight = fy;
+    width = fx;
+    height = fy;
 }
 
 int GLFWGameWindow::getRelativeScale() const {
@@ -96,8 +96,8 @@ int GLFWGameWindow::getRelativeScale() const {
 }
 
 void GLFWGameWindow::getWindowSize(int& width, int& height) const {
-    width = windowedWidth;
-    height = windowedHeight;
+    width = width;
+    height = height;
 }
 
 void GLFWGameWindow::show() {
@@ -122,7 +122,7 @@ void GLFWGameWindow::pollEvents() {
     resized = false;
     glfwPollEvents();
     if(resized)
-      onWindowSizeChanged(windowedWidth, windowedHeight);
+      onWindowSizeChanged(width, height);
     GLFWJoystickManager::update(this);
 }
 
@@ -131,7 +131,7 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
-        glfwSetCursorPos(window, (windowedWidth / 2) / getRelativeScale(), (windowedHeight / 2) / getRelativeScale());
+        glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
@@ -141,15 +141,20 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
+    if((glfwGetWindowMonitor(window) != NULL) == fullscreen) {
+        // already in fullscreen mode nothing to do
+        return;
+    }
     if (fullscreen) {
         glfwGetWindowPos(window, &windowedX, &windowedY);
-        oldWindowedWidth = windowedWidth;
-        oldWindowedHeight = windowedHeight;
+        // convert pixels to window coordinates getRelativeScale() is 2 on macOS retina screens
+        windowedWidth = width / getRelativeScale();
+        windowedHeight = height / getRelativeScale();
         GLFWmonitor* monitor = glfwGetPrimaryMonitor();
         const GLFWvidmode* mode = glfwGetVideoMode(monitor);
         glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
     } else {
-        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, oldWindowedWidth / getRelativeScale(), oldWindowedHeight / getRelativeScale(), GLFW_DONT_CARE);
+        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, GLFW_DONT_CARE);
     }
 }
 
@@ -176,8 +181,8 @@ void GLFWGameWindow::setSwapInterval(int interval) {
 
 void GLFWGameWindow::_glfwWindowSizeCallback(GLFWwindow* window, int w, int h) {
     GLFWGameWindow* user = (GLFWGameWindow*) glfwGetWindowUserPointer(window);
-    user->windowedWidth = w;
-    user->windowedHeight = h;
+    user->width = w;
+    user->height = h;
     user->resized = true;
 }
 
