@@ -14,7 +14,7 @@ private:
     double lastMouseX = 0.0, lastMouseY = 0.0;
     int windowedX = -1, windowedY = -1;
     // width and height in content pixels
-    int width = -1, height = -1
+    int width = -1, height = -1;
     // width and height in window coordinates = pixels / relativeScale
     int windowedWidth = -1, windowedHeight = -1;
     int relativeScale;
