@@ -9,7 +9,7 @@
 #include <math.h>
 
 GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
-        GameWindow(title, width, height, api), width(width), height(height) {
+        GameWindow(title, width, height, api), width(width), height(height), windowedWidth(width), windowedHeight(height) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
