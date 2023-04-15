@@ -79,6 +79,7 @@ public:
 
     virtual void setFullscreen(bool fullscreen) = 0;
 
+    // width and height in content pixels
     virtual void getWindowSize(int& width, int& height) const = 0;
 
     virtual void setClipboardText(std::string const& text) = 0;
