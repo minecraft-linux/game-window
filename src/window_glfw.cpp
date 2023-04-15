@@ -96,8 +96,8 @@ int GLFWGameWindow::getRelativeScale() const {
 }
 
 void GLFWGameWindow::getWindowSize(int& width, int& height) const {
-    width = width;
-    height = height;
+    width = this->width;
+    height = this->height;
 }
 
 void GLFWGameWindow::show() {
