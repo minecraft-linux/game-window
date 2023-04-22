@@ -156,6 +156,7 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
     } else {
         glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, GLFW_DONT_CARE);
     }
+    onWindowSizeChanged(width, height);
 }
 
 void GLFWGameWindow::setClipboardText(std::string const &text) {
@@ -334,6 +335,8 @@ void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode,
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         if (key == GLFW_KEY_BACKSPACE)
             user->onKeyboardText("\x08");
+        if (key == GLFW_KEY_DELETE)
+            user->onKeyboardText("\x7f");
         if (key == GLFW_KEY_ENTER)
             user->onKeyboardText("\n");
     }
