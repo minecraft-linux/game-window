@@ -7,7 +7,12 @@
 #include <thread>
 
 #include <math.h>
-
+#include <sys/time.h>
+long getEpochTime() {
+    struct timeval tp;
+    gettimeofday(&tp, NULL);
+    return tp.tv_sec * 1000 + tp.tv_usec / 1000;
+}
 GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
         GameWindow(title, width, height, api), width(width), height(height), windowedWidth(width), windowedHeight(height) {
 #ifdef GAMEWINDOW_X11_LOCK
@@ -131,9 +136,14 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
+        oms = getEpochTime();
+        glfwGetCursorPos(window, &omx, &omy);
         glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+    if (!disabled && getEpochTime() - oms < 400) {
+        glfwSetCursorPos(window, omx, omy);
+    }
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 }
 
