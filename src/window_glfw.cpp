@@ -89,6 +89,7 @@ void GLFWGameWindow::setRelativeScale() {
     // Update window size to match content size mismatch
     width = fx;
     height = fy;
+    resized = true;
 }
 
 int GLFWGameWindow::getRelativeScale() const {
@@ -119,10 +120,11 @@ void GLFWGameWindow::pollEvents() {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
-    resized = false;
     glfwPollEvents();
-    if(resized)
+    if(resized) {
       onWindowSizeChanged(width, height);
+      resized = false;
+    }
     GLFWJoystickManager::update(this);
 }
 
