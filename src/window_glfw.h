@@ -21,8 +21,6 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
-    long oms;
-    double omx = 0.0, omy = 0.0;
 
     friend class GLFWJoystickManager;
 
