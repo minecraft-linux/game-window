@@ -7,12 +7,7 @@
 #include <thread>
 
 #include <math.h>
-#include <sys/time.h>
-long getEpochTime() {
-    struct timeval tp;
-    gettimeofday(&tp, NULL);
-    return tp.tv_sec * 1000 + tp.tv_usec / 1000;
-}
+
 GLFWGameWindow::GLFWGameWindow(const std::string& title, int width, int height, GraphicsApi api) :
         GameWindow(title, width, height, api), width(width), height(height), windowedWidth(width), windowedHeight(height) {
 #ifdef GAMEWINDOW_X11_LOCK
