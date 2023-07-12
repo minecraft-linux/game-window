@@ -136,14 +136,16 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
-        oms = getEpochTime();
-        glfwGetCursorPos(window, &omx, &omy);
-        glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        if (getenv("GAMEWINDOW_CENTER_CURSOR")) {
+            glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
+        }
+    } else {
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-    if (!disabled && getEpochTime() - oms < 400) {
-        glfwSetCursorPos(window, omx, omy);
-    }
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 }
 
