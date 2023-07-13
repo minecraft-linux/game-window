@@ -21,6 +21,9 @@ EGLUTWindow::EGLUTWindow(const std::string& title, int width, int height, Graphi
     eglutInitWindowSize(width, height);
     if (graphicsApi == GraphicsApi::OPENGL_ES2)
         eglutInitAPIMask(EGLUT_OPENGL_ES2_BIT);
+    if (graphicsApi == GraphicsApi::OPENGL)
+        eglutInitAPIMask(EGLUT_OPENGL_BIT);
+
     winId = eglutCreateWindow(title.c_str());
 
     eglutIdleFunc(_eglutIdleFunc);
@@ -94,6 +97,9 @@ void EGLUTWindow::setCursorDisabled(bool disabled) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
+    if (!disabled && !getenv("GAMEWINDOW_CENTER_CURSOR")) {
+        eglutWarpMousePointer(lastMouseX,lastMouseY);
+    }
     cursorDisabled = disabled;
     eglutSetMousePointerLocked(disabled ? EGLUT_POINTER_LOCKED : EGLUT_POINTER_UNLOCKED);
 }
@@ -142,6 +148,8 @@ void EGLUTWindow::_eglutReshapeFunc(int w, int h) {
 }
 
 void EGLUTWindow::_eglutMouseFunc(int x, int y) {
+    currentWindow->lastMouseX = x;
+    currentWindow->lastMouseY = y;
     if (currentWindow == nullptr)
         return;
     currentWindow->onMousePosition(x, y);

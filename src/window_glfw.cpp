@@ -133,7 +133,14 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
     if (disabled) {
-        glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        if (getenv("GAMEWINDOW_CENTER_CURSOR")) {
+            glfwSetCursorPos(window, (width / 2) / getRelativeScale(), (height / 2) / getRelativeScale());
+        }
+    } else {
+        if (glfwRawMouseMotionSupported())
+            glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
     }
     glfwSetInputMode(window, GLFW_CURSOR, disabled ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
@@ -336,6 +343,8 @@ void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode,
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         if (key == GLFW_KEY_BACKSPACE)
             user->onKeyboardText("\x08");
+        if (key == GLFW_KEY_DELETE)
+            user->onKeyboardText("\x7f");
         if (key == GLFW_KEY_ENTER)
             user->onKeyboardText("\n");
     }
