@@ -29,7 +29,9 @@ void GLFWWindowManager::addGamePadMapping(const std::string &content) {
     GLFWJoystickManager::loadMappings(content);
 }
 
+#ifndef FALLBACK_EGLUT
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {
     return std::shared_ptr<GameWindowManager>(new GLFWWindowManager());
 }
+#endif
