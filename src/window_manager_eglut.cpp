@@ -36,7 +36,9 @@ void EGLUTWindowManager::addGamePadMapping(const std::string &content) {
     LinuxGamepadJoystickManager::instance.loadMappings(content);
 }
 
+#ifndef FALLBACK_EGLUT
 // Define this window manager as the used one
 std::shared_ptr<GameWindowManager> GameWindowManager::createManager() {
     return std::shared_ptr<GameWindowManager>(new EGLUTWindowManager());
 }
+#endif
