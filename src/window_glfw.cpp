@@ -338,7 +338,9 @@ void GLFWGameWindow::_glfwKeyCallback(GLFWwindow* window, int key, int scancode,
 #else
     if (action == GLFW_PRESS && mods & GLFW_MOD_CONTROL && key == GLFW_KEY_V) {
 #endif
-        user->onPaste(glfwGetClipboardString(window));
+        auto clipboardString = glfwGetClipboardString(window);
+        if(clipboardString != nullptr)
+            user->onPaste(clipboardString);
     }
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         if (key == GLFW_KEY_BACKSPACE)
