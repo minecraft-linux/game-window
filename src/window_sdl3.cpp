@@ -166,6 +166,15 @@ void SDL3GameWindow::pollEvents() {
             break;
         case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_KEY_UP:
+            if(SDL_TextInputActive() && ev.type == SDL_EVENT_KEY_DOWN) {
+                if(ev.key.keysym.sym == SDLK_BACKSPACE) {
+                    onKeyboardText("\b");
+                } else if(ev.key.keysym.sym == SDLK_DELETE) {
+                    onKeyboardText("\x7F");
+                } else if(ev.key.keysym.sym == SDLK_RETURN) {
+                    onKeyboardText("\n");
+                }
+            }
             onKeyboard(getKeyMinecraft(ev.key.keysym.sym), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
@@ -183,6 +192,9 @@ void SDL3GameWindow::pollEvents() {
             width = ev.window.data1;
             height = ev.window.data2;
             onWindowSizeChanged(ev.window.data1, ev.window.data2);
+            break;
+        case SDL_EVENT_TEXT_INPUT:
+            onKeyboardText(ev.text.text ? ev.text.text : "");
             break;
         case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
             onClose();
@@ -210,6 +222,14 @@ void SDL3GameWindow::swapBuffers() {
 
 void SDL3GameWindow::setSwapInterval(int interval) {
     SDL_GL_SetSwapInterval(interval);
+}
+
+void SDL3GameWindow::startTextInput() {
+    SDL_StartTextInput();
+}
+
+void SDL3GameWindow::stopTextInput() {
+    SDL_StopTextInput();
 }
 
 KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {

@@ -57,4 +57,8 @@ public:
 
     void setSwapInterval(int interval) override;
 
+    void startTextInput() override;
+    
+    void stopTextInput() override;
+
 };
