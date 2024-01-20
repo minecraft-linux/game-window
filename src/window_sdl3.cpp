@@ -41,11 +41,14 @@ void SDL3GameWindow::makeCurrent(bool c) {
 }
 
 SDL3GameWindow::~SDL3GameWindow() {
-    SDL_DestroyWindow(window);
+    if(window) {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    }
 }
 
 void SDL3GameWindow::setIcon(std::string const& iconPath) {
-    // TODO:
+    
 }
 
 void SDL3GameWindow::setRelativeScale() {
@@ -76,6 +79,10 @@ void SDL3GameWindow::show() {
 }
 
 void SDL3GameWindow::close() {
+    if(window) {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    }
 }
 
 static GamepadButtonId getKeyGamePad(int btn) {
@@ -136,6 +143,24 @@ static GamepadAxisId getAxisGamepad(int btn) {
     }
 }
 
+static int getMouseButton(int btn) {
+    switch (btn)
+    {
+    case SDL_BUTTON_LEFT:
+        return 1;
+    case SDL_BUTTON_RIGHT:
+        return 2;
+    case SDL_BUTTON_MIDDLE:
+        return 3;
+    case SDL_BUTTON_X1:
+        return 4;
+    case SDL_BUTTON_X2:
+        return 5;
+    default:
+        return 0;
+    }
+}
+
 void SDL3GameWindow::pollEvents() {
     SDL_Event ev;
     while(SDL_PollEvent(&ev)) {
@@ -153,7 +178,7 @@ void SDL3GameWindow::pollEvents() {
             break;
         case SDL_EVENT_MOUSE_BUTTON_DOWN:
         case SDL_EVENT_MOUSE_BUTTON_UP:
-            onMouseButton(ev.button.x, ev.button.y, ev.button.button, ev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
+            onMouseButton(ev.button.x, ev.button.y, getMouseButton(ev.button.button), ev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
             break;
         case SDL_EVENT_FINGER_DOWN:
             onTouchStart(ev.tfinger.fingerId, ev.tfinger.x, ev.tfinger.y);
