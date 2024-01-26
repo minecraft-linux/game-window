@@ -88,6 +88,10 @@ public:
 
     virtual void setSwapInterval(int interval) = 0;
 
+    virtual void startTextInput() {}
+    
+    virtual void stopTextInput() {}
+
     void setDrawCallback(DrawCallback callback) { drawCallback = std::move(callback); }
 
     void setWindowSizeCallback(WindowSizeCallback callback) { windowSizeCallback = std::move(callback); }
