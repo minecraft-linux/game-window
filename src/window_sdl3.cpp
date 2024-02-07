@@ -265,8 +265,8 @@ void SDL3GameWindow::stopTextInput() {
 KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
     if (keyCode >= SDLK_F1 && keyCode <= SDLK_F12)
         return (KeyCode) (keyCode - SDLK_F1 + (int) KeyCode::FN1);
-    if (keyCode >= SDLK_KP_0 && keyCode <= SDLK_KP_9)
-        return (KeyCode) (keyCode - SDLK_KP_0 + (int) KeyCode::NUMPAD_0);
+    if (keyCode >= SDLK_KP_1 && keyCode <= SDLK_KP_9)
+        return (KeyCode) (keyCode - SDLK_KP_1 + (int) KeyCode::NUMPAD_1);
     if (keyCode >= SDLK_a && keyCode <= SDLK_z)
         return (KeyCode) (keyCode - SDLK_a + (int) KeyCode::A);
     switch (keyCode) {
@@ -356,6 +356,8 @@ KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
             return KeyCode::NUMPAD_DIVIDE;
         case SDLK_KP_DECIMAL:
             return KeyCode::NUMPAD_DECIMAL;
+        case SDLK_KP_0:
+            return KeyCode::NUMPAD_0;
     }
     if (keyCode < 256)
         return (KeyCode) keyCode;
