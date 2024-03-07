@@ -38,6 +38,8 @@ SDL3GameWindow::SDL3GameWindow(const std::string& title, int width, int height, 
     }
     SDL_GL_MakeCurrent(window, context);
 
+    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
+    SDL_StartTextInput();
     setRelativeScale();
 }
 
@@ -255,11 +257,15 @@ void SDL3GameWindow::setSwapInterval(int interval) {
 }
 
 void SDL3GameWindow::startTextInput() {
+    SDL_StopTextInput();
+    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "1");
     SDL_StartTextInput();
 }
 
 void SDL3GameWindow::stopTextInput() {
     SDL_StopTextInput();
+    SDL_SetHint(SDL_HINT_ENABLE_SCREEN_KEYBOARD, "0");
+    SDL_StartTextInput();
 }
 
 KeyCode SDL3GameWindow::getKeyMinecraft(int keyCode) {
