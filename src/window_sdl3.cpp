@@ -207,6 +207,12 @@ void SDL3GameWindow::pollEvents() {
                     onKeyboardText("\n");
                 }
             }
+            if(SDL_GetModState() & SDL_KMOD_CTRL && ev.key.keysym.sym == SDLK_v) {
+                auto str = SDL_GetClipboardText();
+                onPaste(str);
+                SDL_free(str);
+            }
+
             onKeyboard(getKeyMinecraft(ev.key.keysym.sym), ev.type == SDL_EVENT_KEY_DOWN ? ev.key.repeat ? KeyAction::REPEAT : KeyAction::PRESS : KeyAction::RELEASE );
             break;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
