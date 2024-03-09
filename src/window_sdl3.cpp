@@ -10,6 +10,8 @@
 
 SDL3GameWindow::SDL3GameWindow(const std::string& title, int width, int height, GraphicsApi api) :
         GameWindow(title, width, height, api), width(width), height(height), windowedWidth(width), windowedHeight(height) {
+    SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS, "0");
+    SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS, "0");
     if(api == GraphicsApi::OPENGL_ES2) {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
@@ -188,14 +190,26 @@ void SDL3GameWindow::pollEvents() {
             onMouseButton(ev.button.x, ev.button.y, getMouseButton(ev.button.button), ev.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? MouseButtonAction::PRESS : MouseButtonAction::RELEASE);
             break;
         case SDL_EVENT_FINGER_DOWN:
-            onTouchStart(ev.tfinger.fingerId, ev.tfinger.x, ev.tfinger.y);
+        {
+            int w, h;
+            getWindowSize(w, h);
+            onTouchStart(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
+        }
         case SDL_EVENT_FINGER_UP:
-            onTouchEnd(ev.tfinger.fingerId, ev.tfinger.x, ev.tfinger.y);
+        {
+            int w, h;
+            getWindowSize(w, h);
+            onTouchEnd(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
+        }
         case SDL_EVENT_FINGER_MOTION:
-            onTouchUpdate(ev.tfinger.fingerId, ev.tfinger.x, ev.tfinger.y);
+        {
+            int w, h;
+            getWindowSize(w, h);
+            onTouchUpdate(ev.tfinger.fingerId, ev.tfinger.x * w, ev.tfinger.y * h);
             break;
+        }
         case SDL_EVENT_KEY_DOWN:
         case SDL_EVENT_KEY_UP:
             if(SDL_TextInputActive() && ev.type == SDL_EVENT_KEY_DOWN) {
