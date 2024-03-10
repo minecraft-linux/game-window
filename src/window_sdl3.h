@@ -22,6 +22,7 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
+    std::vector<FullscreenMode> modes;
 
     static KeyCode getKeyMinecraft(int keyCode);
 
@@ -60,5 +61,9 @@ public:
     void startTextInput() override;
     
     void stopTextInput() override;
+
+    void setFullscreenMode(const FullscreenMode& mode) override;
+
+    std::vector<FullscreenMode> getFullscreenModes() override;
 
 };

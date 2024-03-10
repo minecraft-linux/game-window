@@ -250,6 +250,10 @@ void SDL3GameWindow::pollEvents() {
             break;
         case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
             onClose();
+            break;
+        case SDL_EVENT_WINDOW_DISPLAY_CHANGED:
+            modes.clear();
+            break;
         default:
             break;
         }
@@ -258,6 +262,36 @@ void SDL3GameWindow::pollEvents() {
 
 void SDL3GameWindow::setCursorDisabled(bool disabled) {
     SDL_SetRelativeMouseMode(disabled);
+}
+
+static std::string getModeDescription(const SDL_DisplayMode* mode) {
+    std::stringstream desc;
+    desc << mode->w << "x" << mode->h << " @ " << mode->refresh_rate << " * " << mode->pixel_density;
+    return desc.str();
+}
+
+void SDL3GameWindow::setFullscreenMode(const FullscreenMode& mode) {
+    int nModes = 0;
+    auto display = SDL_GetDisplayForWindow(window);
+    auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
+
+    if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
+        SDL_SetWindowFullscreenMode(window, modes[mode.id]);
+    }
+    SDL_free(modes);
+}
+
+std::vector<FullscreenMode> SDL3GameWindow::getFullscreenModes() {
+    if(modes.empty()) {
+        int nModes = 0;
+        auto display = SDL_GetDisplayForWindow(window);
+        auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
+        for(int j = 0; j < nModes; j++) {
+            this->modes.emplace_back(FullscreenMode { .description = getModeDescription(modes[j]), .id = j });
+        }
+        SDL_free(modes);
+    }
+    return modes;
 }
 
 void SDL3GameWindow::setFullscreen(bool fullscreen) {

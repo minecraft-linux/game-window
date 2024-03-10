@@ -22,6 +22,10 @@ enum class GamepadAxisId {
     LEFT_X, LEFT_Y, RIGHT_X, RIGHT_Y, LEFT_TRIGGER, RIGHT_TRIGGER,
     UNKNOWN = -1
 };
+struct FullscreenMode {
+    int id = 0;
+    std::string description;
+};
 
 class GameWindow {
 
@@ -91,6 +95,12 @@ public:
     virtual void startTextInput() {}
     
     virtual void stopTextInput() {}
+
+    virtual void setFullscreenMode(const FullscreenMode& mode) {}
+
+    virtual std::vector<FullscreenMode> getFullscreenModes() {
+        return {};
+    }
 
     void setDrawCallback(DrawCallback callback) { drawCallback = std::move(callback); }
 
