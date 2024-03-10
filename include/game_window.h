@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <vector>
 #include "key_mapping.h"
 
 enum class GraphicsApi {
