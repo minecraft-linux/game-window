@@ -61,7 +61,11 @@ public:
 
     void pollEvents() override;
 
+    bool getCursorDisabled() override;
+
     void setCursorDisabled(bool disabled) override;
+
+    bool getFullscreen() override;
 
     void setFullscreen(bool fullscreen) override;
 

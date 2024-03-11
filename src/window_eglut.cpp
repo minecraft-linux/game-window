@@ -81,16 +81,24 @@ void EGLUTWindow::close() {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
-    eglutDestroyWindow(currentWindow->winId);
-    eglutFini();
+    currentWindow->onClose();
+    int winId = currentWindow->winId;
     currentWindow->winId = -1;
+    eglutDestroyWindow(winId);
+    eglutFini();
 }
 
 void EGLUTWindow::pollEvents() {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
-    eglutPollEvents();
+    if(currentWindow->winId != -1) {
+        eglutPollEvents();
+    }
+}
+
+bool EGLUTWindow::getCursorDisabled() {
+    return cursorDisabled;
 }
 
 void EGLUTWindow::setCursorDisabled(bool disabled) {
@@ -102,6 +110,10 @@ void EGLUTWindow::setCursorDisabled(bool disabled) {
     }
     cursorDisabled = disabled;
     eglutSetMousePointerLocked(disabled ? EGLUT_POINTER_LOCKED : EGLUT_POINTER_UNLOCKED);
+}
+
+bool EGLUTWindow::getFullscreen() {
+    return eglutGet(EGLUT_FULLSCREEN_MODE) == EGLUT_FULLSCREEN;
 }
 
 void EGLUTWindow::setFullscreen(bool fullscreen) {

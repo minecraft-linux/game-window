@@ -82,6 +82,10 @@ public:
 
     virtual void setCursorDisabled(bool disabled) = 0;
 
+    virtual bool getCursorDisabled() = 0;
+
+    virtual bool getFullscreen() = 0;
+
     virtual void setFullscreen(bool fullscreen) = 0;
 
     // width and height in content pixels
@@ -98,6 +102,10 @@ public:
     virtual void stopTextInput() {}
 
     virtual void setFullscreenMode(const FullscreenMode& mode) {}
+
+    virtual FullscreenMode getFullscreenMode() {
+        return { -1 };
+    }
 
     virtual std::vector<FullscreenMode> getFullscreenModes() {
         return {};

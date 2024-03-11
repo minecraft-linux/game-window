@@ -21,6 +21,8 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
+    std::vector<FullscreenMode> modes;
+    FullscreenMode mode = { -1 }; 
 
     friend class GLFWJoystickManager;
 
@@ -60,7 +62,11 @@ public:
 
     void pollEvents() override;
 
+    bool getCursorDisabled() override;
+
     void setCursorDisabled(bool disabled) override;
+
+    bool getFullscreen() override;
 
     void setFullscreen(bool fullscreen) override;
 
@@ -72,4 +78,9 @@ public:
 
     void setSwapInterval(int interval) override;
 
+    void setFullscreenMode(const FullscreenMode& mode) override;
+
+    FullscreenMode getFullscreenMode() override;
+
+    std::vector<FullscreenMode> getFullscreenModes() override;
 };

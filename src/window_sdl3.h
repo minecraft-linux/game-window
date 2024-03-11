@@ -46,7 +46,11 @@ public:
 
     void pollEvents() override;
 
+    bool getCursorDisabled() override;
+
     void setCursorDisabled(bool disabled) override;
+
+    bool getFullscreen() override;
 
     void setFullscreen(bool fullscreen) override;
 
@@ -63,6 +67,8 @@ public:
     void stopTextInput() override;
 
     void setFullscreenMode(const FullscreenMode& mode) override;
+
+    FullscreenMode getFullscreenMode() override;
 
     std::vector<FullscreenMode> getFullscreenModes() override;
 

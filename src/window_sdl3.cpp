@@ -90,6 +90,7 @@ void SDL3GameWindow::show() {
 
 void SDL3GameWindow::close() {
     if(window) {
+        onClose();
         SDL_DestroyWindow(window);
         window = nullptr;
     }
@@ -261,6 +262,10 @@ void SDL3GameWindow::pollEvents() {
     }
 }
 
+bool SDL3GameWindow::getCursorDisabled() {
+    return SDL_GetRelativeMouseMode();
+}
+
 void SDL3GameWindow::setCursorDisabled(bool disabled) {
     SDL_SetRelativeMouseMode(disabled);
 }
@@ -282,6 +287,22 @@ void SDL3GameWindow::setFullscreenMode(const FullscreenMode& mode) {
     SDL_free(modes);
 }
 
+FullscreenMode SDL3GameWindow::getFullscreenMode() {
+    auto display = SDL_GetDisplayForWindow(window);
+    int nModes;
+    auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
+    auto mode = SDL_GetWindowFullscreenMode(window);
+    if(mode && modes) {
+        auto desc = getModeDescription(mode);
+        for(int i = 0; i < nModes; i++) {
+            if(desc == getModeDescription(modes[i])) {
+                return FullscreenMode { .id = i, .description = desc};
+            }
+        }
+    }
+    return FullscreenMode { -1 };
+}
+
 std::vector<FullscreenMode> SDL3GameWindow::getFullscreenModes() {
     if(modes.empty()) {
         int nModes = 0;
@@ -293,6 +314,10 @@ std::vector<FullscreenMode> SDL3GameWindow::getFullscreenModes() {
         SDL_free(modes);
     }
     return modes;
+}
+
+bool SDL3GameWindow::getFullscreen() {
+    return SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN;
 }
 
 void SDL3GameWindow::setFullscreen(bool fullscreen) {
