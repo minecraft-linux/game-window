@@ -5,6 +5,7 @@
 #include <codecvt>
 #include <iomanip>
 #include <thread>
+#include <sstream>
 
 #include <math.h>
 
