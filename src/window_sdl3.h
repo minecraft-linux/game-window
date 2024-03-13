@@ -22,6 +22,9 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
+    bool requestFullscreen = false;
+    bool pendingFullscreenModeSwitch = false;
+    FullscreenMode mode;
     std::vector<FullscreenMode> modes;
 
     static KeyCode getKeyMinecraft(int keyCode);

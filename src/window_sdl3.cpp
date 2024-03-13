@@ -172,7 +172,26 @@ static int getMouseButton(int btn) {
     }
 }
 
+static std::string getModeDescription(const SDL_DisplayMode* mode) {
+    std::stringstream desc;
+    desc << mode->w << "x" << mode->h << " @ " << mode->refresh_rate << " * " << mode->pixel_density;
+    return desc.str();
+}
+
 void SDL3GameWindow::pollEvents() {
+    if(requestFullscreen != getFullscreen()) {
+        SDL_SetWindowFullscreen(window, requestFullscreen);
+    }
+    if(pendingFullscreenModeSwitch) {
+        pendingFullscreenModeSwitch = false;
+        int nModes = 0;
+        auto display = SDL_GetDisplayForWindow(window);
+        auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
+        if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
+            SDL_SetWindowFullscreenMode(window, modes[mode.id]);
+        }
+        SDL_free(modes);
+    }
     SDL_Event ev;
     while(SDL_PollEvent(&ev)) {
         switch (ev.type)
@@ -270,21 +289,9 @@ void SDL3GameWindow::setCursorDisabled(bool disabled) {
     SDL_SetRelativeMouseMode(disabled);
 }
 
-static std::string getModeDescription(const SDL_DisplayMode* mode) {
-    std::stringstream desc;
-    desc << mode->w << "x" << mode->h << " @ " << mode->refresh_rate << " * " << mode->pixel_density;
-    return desc.str();
-}
-
 void SDL3GameWindow::setFullscreenMode(const FullscreenMode& mode) {
-    int nModes = 0;
-    auto display = SDL_GetDisplayForWindow(window);
-    auto modes = SDL_GetFullscreenDisplayModes(display, &nModes);
-
-    if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
-        SDL_SetWindowFullscreenMode(window, modes[mode.id]);
-    }
-    SDL_free(modes);
+    this->mode = mode;
+    pendingFullscreenModeSwitch = true;
 }
 
 FullscreenMode SDL3GameWindow::getFullscreenMode() {
@@ -321,7 +328,7 @@ bool SDL3GameWindow::getFullscreen() {
 }
 
 void SDL3GameWindow::setFullscreen(bool fullscreen) {
-    SDL_SetWindowFullscreen(window, fullscreen);
+    requestFullscreen = fullscreen;
 }
 
 void SDL3GameWindow::setClipboardText(std::string const &text) {

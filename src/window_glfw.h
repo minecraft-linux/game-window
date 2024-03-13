@@ -21,6 +21,8 @@ private:
     bool resized = false;
     bool focused = true;
     bool warnedButtons = false;
+    bool requestFullscreen = false;
+    bool pendingFullscreenModeSwitch = false;
     std::vector<FullscreenMode> modes;
     FullscreenMode mode = { -1 }; 
 

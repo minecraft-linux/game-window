@@ -118,10 +118,45 @@ void GLFWGameWindow::close() {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+static std::string getModeDescription(const GLFWvidmode& mode) {
+    std::stringstream desc;
+    desc << mode.width << "x" << mode.height << " @ " << mode.refreshRate;
+    return desc.str();
+}
+
 void GLFWGameWindow::pollEvents() {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
+    if((glfwGetWindowMonitor(window) != NULL) != requestFullscreen) {
+        if(requestFullscreen) {
+            glfwGetWindowPos(window, &windowedX, &windowedY);
+            // convert pixels to window coordinates getRelativeScale() is 2 on macOS retina screens
+            windowedWidth = width / getRelativeScale();
+            windowedHeight = height / getRelativeScale();
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            int nModes = 0;
+            auto modes = glfwGetVideoModes(monitor, &nModes);
+            if(mode.id != -1 && nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
+                glfwSetWindowMonitor(window, monitor, 0, 0, modes[mode.id].width, modes[mode.id].height, modes[mode.id].refreshRate);
+                return;
+            }
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        } else {
+            glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, GLFW_DONT_CARE);
+        }
+    } else if(pendingFullscreenModeSwitch) {
+        pendingFullscreenModeSwitch = false;
+        int nModes = 0;
+        auto display = glfwGetWindowMonitor(window);
+        if(display) {
+            auto modes = glfwGetVideoModes(display, &nModes);
+            if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
+                glfwSetWindowMonitor(window, display, 0, 0, modes[mode.id].width, modes[mode.id].height, modes[mode.id].refreshRate);
+            }
+        }
+    }
     glfwPollEvents();
     if(resized) {
       onWindowSizeChanged(width, height);
@@ -152,12 +187,6 @@ void GLFWGameWindow::setCursorDisabled(bool disabled) {
     glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
 }
 
-static std::string getModeDescription(const GLFWvidmode& mode) {
-    std::stringstream desc;
-    desc << mode.width << "x" << mode.height << " @ " << mode.refreshRate;
-    return desc.str();
-}
-
 bool GLFWGameWindow::getFullscreen() {
     return glfwGetWindowMonitor(window) != NULL;
 }
@@ -166,27 +195,7 @@ void GLFWGameWindow::setFullscreen(bool fullscreen) {
 #ifdef GAMEWINDOW_X11_LOCK
     std::lock_guard<std::recursive_mutex> lock(x11_sync);
 #endif
-    if((glfwGetWindowMonitor(window) != NULL) == fullscreen) {
-        // already in fullscreen mode nothing to do
-        return;
-    }
-    if (fullscreen) {
-        glfwGetWindowPos(window, &windowedX, &windowedY);
-        // convert pixels to window coordinates getRelativeScale() is 2 on macOS retina screens
-        windowedWidth = width / getRelativeScale();
-        windowedHeight = height / getRelativeScale();
-        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-        int nModes = 0;
-        auto modes = glfwGetVideoModes(monitor, &nModes);
-        if(mode.id != -1 && nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
-            glfwSetWindowMonitor(window, monitor, 0, 0, modes[mode.id].width, modes[mode.id].height, modes[mode.id].refreshRate);
-            return;
-        }
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-    } else {
-        glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, GLFW_DONT_CARE);
-    }
+    requestFullscreen = fullscreen;
 }
 
 void GLFWGameWindow::setClipboardText(std::string const &text) {
@@ -414,14 +423,7 @@ void GLFWGameWindow::_glfwWindowContentScaleCallback(GLFWwindow* window, float s
 
 void GLFWGameWindow::setFullscreenMode(const FullscreenMode& mode) {
     this->mode = mode;
-    int nModes = 0;
-    auto display = glfwGetWindowMonitor(window);
-    if(display) {
-        auto modes = glfwGetVideoModes(display, &nModes);
-        if(nModes > mode.id && mode.description == getModeDescription(modes[mode.id])) {
-            glfwSetWindowMonitor(window, display, 0, 0, modes[mode.id].width, modes[mode.id].height, modes[mode.id].refreshRate);
-        }
-    }
+    pendingFullscreenModeSwitch = true;
 }
 
 std::vector<FullscreenMode> GLFWGameWindow::getFullscreenModes() {
