@@ -177,11 +177,11 @@ void EGLUTWindow::_eglutMouseRawFunc(double x, double y) {
 void EGLUTWindow::_eglutMouseButtonFunc(int x, int y, int btn, int action) {
     if (currentWindow == nullptr)
         return;
-    if (btn == 4 || btn == 5) {
+    if ((btn == 4 || btn == 5) && action == EGLUT_MOUSE_PRESS) {
         currentWindow->onMouseScroll(x, y, 0.0, (btn == 5 ? -1.0 : 1.0));
         return;
     }
-    if (btn == 6 || btn == 7) {
+    if ((btn == 6 || btn == 7) && action == EGLUT_MOUSE_PRESS) {
         currentWindow->onMouseScroll(x, y, (btn == 7 ? -1.0 : 1.0), 0.0);
         return;
     }
